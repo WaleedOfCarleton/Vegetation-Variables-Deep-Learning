@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env/
+
+# Jupyter / IDE
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local truth/reference file (provided externally)
+/Inputs Cases LAI.xlsx
+
+# Large datasets / generated artifacts
+# Simulation imagery dataset is ~GBs; keep scripts + small CSVs, ignore the image folders.
+/Simulations/DHP - ERECT - 4000x4000/
+/Simulations/DHP - PLANO - 4000x4000/
+/Simulations/DHP - RND - 4000x4000/
+
+# ML artifacts (checkpoints, logs)
+*.pt
+*.pth
+*.ckpt
+runs/
+lightning_logs/
+
+# If you don't want to version generated CSV outputs, uncomment:
+# *.csv
