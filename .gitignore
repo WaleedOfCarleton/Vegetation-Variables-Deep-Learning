@@ -28,6 +28,19 @@ Thumbs.db
 /Simulations/DHP - PLANO - 4000x4000/
 /Simulations/DHP - RND - 4000x4000/
 
+# Example RAW images are large; keep example code, not the RAW files.
+/example_data/
+*.CR2
+*.cr2
+*.CR3
+*.cr3
+*.NEF
+*.nef
+*.RAW
+*.raw
+*.DNG
+*.dng
+
 # ML artifacts (checkpoints, logs)
 *.pt
 *.pth
