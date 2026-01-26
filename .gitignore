@@ -48,5 +48,10 @@ Thumbs.db
 runs/
 lightning_logs/
 
+# CNN baseline generated outputs
+/cnn_baseline/archive/
+/cnn_baseline/cnn_training_progress*.csv
+/cnn_baseline/run_*.log
+
 # If you don't want to version generated CSV outputs, uncomment:
 # *.csv

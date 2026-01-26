@@ -103,6 +103,11 @@ From the repo root, run (using your Python executable):
 - `python run_pipeline.py` (runs truth join → dataset index → image baseline → evaluation)
 - `python run_pipeline.py --include-cnn` (also attempts CNN training)
 
+## Note on generated CSV outputs
+
+Some of the CSV files in this repository (e.g., simulation outputs, joined truth tables, and baseline prediction outputs) are generated artifacts that can take a while to reproduce.
+They are intentionally kept under version control during active development so results can be inspected and shared without rerunning long jobs.
+
 ## Credit / citation
 
 Please credit and cite the original HemiPy authors as described in [README.md](README.md) and [CITATION.cff](CITATION.cff).

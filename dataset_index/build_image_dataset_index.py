@@ -53,12 +53,26 @@ def main() -> int:
     p.add_argument("--sim-root", type=Path, default=DEFAULT_SIM_ROOT)
     p.add_argument("--truth-csv", type=Path, default=DEFAULT_TRUTH)
     p.add_argument("--out", type=Path, default=DEFAULT_OUT)
-    p.add_argument(
+    g = p.add_mutually_exclusive_group()
+    g.add_argument(
         "--include-rnd",
         action="store_true",
-        help="Include RND images too (truth_PAI will likely be missing for them).",
+        default=None,
+        help="Include RND images (default: include). Kept for backward-compatibility.",
+    )
+    g.add_argument(
+        "--exclude-rnd",
+        action="store_true",
+        default=None,
+        help="Exclude RND images.",
     )
     args = p.parse_args()
+
+    include_rnd = True
+    if args.include_rnd is True:
+        include_rnd = True
+    if args.exclude_rnd is True:
+        include_rnd = False
 
     sim_root = args.sim_root.resolve()
     if not sim_root.exists():
@@ -77,12 +91,12 @@ def main() -> int:
         case_norm = _extract_case_norm(fp)
         plot = _extract_plot(fp)
 
-        if not args.include_rnd and orientation == "RND":
+        if not include_rnd and orientation == "RND":
             continue
 
         rows.append(
             {
-                "image_path": fp.resolve().relative_to(HERE).as_posix(),
+                "image_path": fp.resolve().relative_to(REPO_ROOT).as_posix(),
                 "filename": fp.name,
                 "simulation_set": next((p for p in fp.parts if "DHP -" in p), None),
                 "orientation": orientation,
@@ -95,20 +109,35 @@ def main() -> int:
     if index_df.empty:
         raise RuntimeError("No images found. Check --sim-root and extensions.")
 
-    # Join truth labels (many images -> one truth per case_norm+orientation)
+    # Join truth labels
+    # For PAI (true PAI), the value is invariant across orientations.
+    # We join truth by case_norm only so that RND images can be labeled too.
     truth = pd.read_csv(args.truth_csv)
-    need_cols = {"case_norm", "orientation", "truth_PAI"}
+    need_cols = {"case_norm", "truth_PAI"}
     missing = need_cols - set(truth.columns)
     if missing:
         raise ValueError(f"Truth CSV missing columns: {sorted(missing)}")
 
-    truth_small = truth[["case_norm", "orientation", "truth_PAI", "truth_LAI", "truth_Clumping", "truth_sim_id"]].copy()
-    out = index_df.merge(
-        truth_small,
-        on=["case_norm", "orientation"],
-        how="left",
-        validate="many_to_one",
-    )
+    keep_cols = [c for c in ["case_norm", "truth_PAI", "truth_LAI", "truth_Clumping", "truth_sim_id"] if c in truth.columns]
+    truth_small = truth[keep_cols].copy()
+    for c in ["truth_PAI", "truth_LAI", "truth_Clumping"]:
+        if c in truth_small.columns:
+            truth_small[c] = pd.to_numeric(truth_small[c], errors="coerce")
+
+    def _first_nonnull(s: pd.Series):
+        s2 = s.dropna()
+        return s2.iloc[0] if len(s2) else pd.NA
+
+    agg = {"truth_PAI": "mean"}
+    if "truth_LAI" in truth_small.columns:
+        agg["truth_LAI"] = "mean"
+    if "truth_Clumping" in truth_small.columns:
+        agg["truth_Clumping"] = "mean"
+    if "truth_sim_id" in truth_small.columns:
+        agg["truth_sim_id"] = _first_nonnull
+
+    truth_case = truth_small.groupby("case_norm", as_index=False).agg(agg)
+    out = index_df.merge(truth_case, on=["case_norm"], how="left", validate="many_to_one")
 
     out.to_csv(args.out, index=False)
     print("Wrote:", args.out)
