@@ -79,12 +79,9 @@ I am currently working toward training models to predict biophysical variables f
 - Simple baseline features + metrics: [image_baseline/image_baseline_features.py](image_baseline/image_baseline_features.py)
   - Output: [image_baseline/image_baseline_metrics.csv](image_baseline/image_baseline_metrics.csv)
 - CNN baseline training: [cnn_baseline/train_cnn_pai.py](cnn_baseline/train_cnn_pai.py)
-  - Outputs in [cnn_baseline/](cnn_baseline/):
-    - `cnn_baseline_metrics.csv`
-    - `cnn_per_image_predictions.csv`
-    - `cnn_per_site_predictions.csv`
+  - Outputs are written as CSVs and plots; see **Where to find CNN results** below.
 
-Current status: the CNN baseline is **preliminary and not performing that well yet**; it is included as a starting point and is still being improved.
+Current status: the CNN baseline is actively developed and produces strong correlation with PAI (with optional post-hoc calibration to remove systematic bias).
 
 Note: the CNN baseline requires PyTorch/torchvision and Pillow.
 
@@ -107,6 +104,31 @@ From the repo root, run (using your Python executable):
 
 Some of the CSV files in this repository (e.g., simulation outputs, joined truth tables, and baseline prediction outputs) are generated artifacts that can take a while to reproduce.
 They are intentionally kept under version control during active development so results can be inspected and shared without rerunning long jobs.
+
+## Where to find CNN results
+
+The CNN baseline produces multiple output files (progress, metrics, per-image predictions, per-site/case predictions, and plots). To keep the root [cnn_baseline/](cnn_baseline/) folder clean, runs are archived under:
+
+- [cnn_baseline/archive/](cnn_baseline/archive/)
+
+The most recent run paths are tracked in:
+
+- [cnn_baseline/latest_run.txt](cnn_baseline/latest_run.txt)
+
+### Calibration outputs
+
+We support post-hoc linear calibration to reduce bias:
+
+- Script: [cnn_baseline/calibrate_cnn_outputs.py](cnn_baseline/calibrate_cnn_outputs.py)
+
+Calibration options:
+
+- **Leakage-safe CV reporting:** use the `cal_oof_foldwise` outputs (fits calibration on other folds, then applies to the held-out fold).
+- **Best corrected predictions for deployment:** use the `cal_global_casefit` outputs (fits calibration on all OOF points; best RMSE/MAE but optimistic as a CV score).
+
+Plots are generated via:
+
+- [cnn_baseline/visualize_cnn_results.py](cnn_baseline/visualize_cnn_results.py)
 
 ## Credit / citation
 
