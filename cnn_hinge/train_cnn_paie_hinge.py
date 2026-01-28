@@ -317,6 +317,11 @@ def main() -> int:
 
     p.add_argument("--progress-csv", type=Path, default=DEFAULT_PROGRESS_CSV)
     p.add_argument("--no-progress-csv", action="store_true")
+    p.add_argument(
+        "--log-batches",
+        action="store_true",
+        help="Log periodic batch-level rows to the progress CSV (very verbose).",
+    )
 
     p.add_argument("--kfold", type=int, default=5)
     p.add_argument("--seed", type=int, default=0)
@@ -560,44 +565,49 @@ def main() -> int:
                         }
                     )
 
-                def _on_batch(batch_idx: int, n_batches: int, avg_loss: float) -> None:
-                    if pw.path is None:
-                        return
-                    pw.write(
-                        {
-                            "run_id": run_id,
-                            "timestamp_utc": _utc_stamp(),
-                            "device": str(device),
-                            "kfold": int(args.kfold),
-                            "fold": int(fold),
-                            "epoch": int(epoch),
-                            "event": "batch",
-                            "n_train": int(len(tr)),
-                            "n_test": int(len(te)),
-                            "train_mse": float(avg_loss),
-                            "val_rmse": math.nan,
-                            "val_mae": math.nan,
-                            "val_r": math.nan,
-                            "val_r2": math.nan,
-                            "best_epoch": int(best_epoch),
-                            "best_val_rmse": float(best_rmse) if math.isfinite(best_rmse) else math.nan,
-                            "early_stop": int(patience),
-                            "batch_size": cfg.batch_size,
-                            "num_workers": cfg.num_workers,
-                            "image_size": cfg.image_size,
-                            "backbone": cfg.backbone,
-                            "freeze_backbone": cfg.freeze_backbone,
-                            "nonnegative_head": cfg.nonnegative_head,
-                            "aug": bool(args.aug),
-                            "aug_scale_min": float(args.aug_scale_min),
-                            "aug_hflip": bool(args.aug_hflip),
-                            "aug_color_jitter": float(args.aug_color_jitter),
-                            "lr": cfg.lr,
-                            "weight_decay": cfg.weight_decay,
-                        }
-                    )
+                on_batch = None
+                if args.log_batches:
 
-                train_mse = train_one_epoch(model, train_loader, optimizer, device, on_batch=_on_batch)
+                    def _on_batch(batch_idx: int, n_batches: int, avg_loss: float) -> None:
+                        if pw.path is None:
+                            return
+                        pw.write(
+                            {
+                                "run_id": run_id,
+                                "timestamp_utc": _utc_stamp(),
+                                "device": str(device),
+                                "kfold": int(args.kfold),
+                                "fold": int(fold),
+                                "epoch": int(epoch),
+                                "event": "batch",
+                                "n_train": int(len(tr)),
+                                "n_test": int(len(te)),
+                                "train_mse": float(avg_loss),
+                                "val_rmse": math.nan,
+                                "val_mae": math.nan,
+                                "val_r": math.nan,
+                                "val_r2": math.nan,
+                                "best_epoch": int(best_epoch),
+                                "best_val_rmse": float(best_rmse) if math.isfinite(best_rmse) else math.nan,
+                                "early_stop": int(patience),
+                                "batch_size": cfg.batch_size,
+                                "num_workers": cfg.num_workers,
+                                "image_size": cfg.image_size,
+                                "backbone": cfg.backbone,
+                                "freeze_backbone": cfg.freeze_backbone,
+                                "nonnegative_head": cfg.nonnegative_head,
+                                "aug": bool(args.aug),
+                                "aug_scale_min": float(args.aug_scale_min),
+                                "aug_hflip": bool(args.aug_hflip),
+                                "aug_color_jitter": float(args.aug_color_jitter),
+                                "lr": cfg.lr,
+                                "weight_decay": cfg.weight_decay,
+                            }
+                        )
+
+                    on_batch = _on_batch
+
+                train_mse = train_one_epoch(model, train_loader, optimizer, device, on_batch=on_batch)
                 y_true, y_hat, metas = predict(model, test_loader, device, pred_min=pred_min)
 
                 m_img = regression_metrics(y_true, y_hat)

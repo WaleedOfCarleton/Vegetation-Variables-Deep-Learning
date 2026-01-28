@@ -1,153 +1,236 @@
-# HemiPy: A Python module for automated estimation of forest biophysical variables and uncertainties from digital hemispherical photographs
+# HemiPy fork — Simulation + ML workflows
 
-## Introduction
+This repository is based on the original **HemiPy** project by **Luke A. Brown**.
+The core `hemipy` package (canopy variable estimation from hemispherical photographs) is the original library; this fork focuses on running HemiPy on a simulated image dataset, validating outputs against provided “truth” values, and building ML baselines (including a CNN).
 
-`hemipy` is an open-source Python module for deriving forest biophysical variables and uncertainties from digital hemispherical photographs in an automated manner. `hemipy` is well-suited to batch processing and supports a wide range of image formats. 
+For the original upstream project documentation, see [OldREADME.md](OldREADME.md).
 
-From multi-angular gap fraction determined by an automated binary image classification<sup>[1]</sup>, the following canopy biophysical variables (and their uncertainties) are computed by `hemipy`:
+## Project owner / timeline
 
-* Effective plant area index (PAI<sub>e</sub>), plant area index (PAI), and the clumping index (Ω)<sup>[2,3]</sup>;
-* The instantaneous black-sky fraction of intercepted photosynthetically active radiation (FIPAR);
-* The fraction of vegetation cover (FCOVER).
+- **Author:** Waleed Abu-Osbeh
+- **Work started:** Jan 16, 2026
+- **Status:** Ongoing (actively in progress)
 
-<sup>[1]</sup>For upwards-facing images, Ridler and Calvard's (1978) clustering algorithm is used to separate sky and canopy pixels, as it was shown to be the most robust of 35 algorithms tested by Jonckheere et al. (2005). In this case, only the blue band is used to maximise contrast and minimise the confounding effects of chromatic aberration and within-canopy multiple scattering (Leblanc et al., 2005; Macfarlane et al., 2014, 2007; Zhang et al., 2005). For downwards- facing images, the approach proposed by Meyer and Neto (2008) is adopted, which separates green vegetation from the underlying soil background on the basis of two colour indices.
+## Summary of what I added/changed
 
-<sup>[2]</sup>Two alternative approaches are implemented to estimate PAI<sub>e</sub>, in which a random distribution of leaves is assumed: a method derived from Warren-Wilson's (1963) approach, which considers gap fraction at the hinge region surrounding the zenith angle of 57.5° only (where gap fraction is nearly independent of leaf angle distribution), and a generalised version of Miller's (1967) integral, which makes use of a fuller range of multi-angular observations. In both cases, to account for the effects of foliage clumping and derive PAI as opposed to PAI<sub>e</sub>, Lang and Yueqin's (1986) logarithm averaging method is adopted. Ω is computed as the ratio of PAI<sub>e</sub> to PAI.
+### 1) Added a simulation workflow (Sylvain Leblanc dataset)
 
-<sup>[3]</sup>For downwards-facing images, effective green area index (GAI<sub>e</sub>) and green area index (GAI) are provided as opposed to PAI<sub>e</sub> and PAI.
+I adapted/added scripts so the code can be run in batch on the simulation image dataset located under:
 
-## Additional information and citation
+- [Simulations/](Simulations/)
 
-More detailed description, demonstration, and verification of `hemipy` is provided in the accompanying *Methods in Ecology and Evolution* paper. **Please cite the paper in any work making use of the module:**
+The simulation runner scripts are:
 
-Brown, L.A., Morris, H., Leblanc, S., Bai, G., Lanconelli, C., Gobron, N., Meier, C., Dash, J. HemiPy: A Python module for automated estimation of forest biophysical variables and uncertainties from digital hemispherical photographs, *Methods Ecol. Evol.*
+- [Simulations/run_simulations.py](Simulations/run_simulations.py): batch-processes the simulation plots and writes outputs
+- [Simulations/run_example.py](Simulations/run_example.py): smaller example-style runner
 
-## Installation
+Outputs produced:
 
-The latest release of `hemipy` can easily be installed using `pip`:
+- [Simulations/simulations_output.csv](Simulations/simulations_output.csv): predicted biophysical variables (e.g., PAI-related outputs)
+- [Simulations/simulations_errors.csv](Simulations/simulations_errors.csv): errors encountered while processing cases/plots
 
-`pip install https://github.com/luke-a-brown/hemipy/archive/refs/tags/v0.1.2.zip`
+### 2) Joined HemiPy predictions to “truth” values (Leblanc Excel)
 
-## Dependencies
+To validate the HemiPy predictions against the provided reference (“true”) values, I added a join step:
 
-`hemipy` makes use of the `imageio`, `numpy`, `rawpy`, `scikit-image` and `uncertainties` modules, as well as several modules included in the Python Standard Library (`datetime`, `glob` and `math`).
+- [truth_join/join_truth_to_hemipy.py](truth_join/join_truth_to_hemipy.py)
 
-## Overview
+Inputs:
 
-`hemipy` consists of three main functions. The typical workflow for processing a set of digital hemispherical photographs from a single measurement plot is as follows:
+- [Simulations/simulations_output.csv](Simulations/simulations_output.csv)
+- [Inputs Cases LAI.xlsx](Inputs%20Cases%20LAI.xlsx) (Excel sheet containing the provided truth values)
 
-1.	Use the `hemipy.zenith()` and `hemipy.azimuth()` functions to determine the zenith and azimuth angle represented by each pixel of the image (based on the characteristics of the digital camera and lens);
-2.	Pass these arrays to the `hemipy.process()` function, along with the directory of images to be processed, the direction (i.e. upwards- or downwards-facing) of these images, and the date and latitude at which the images were acquired (necessary for FIPAR computation):
+Output:
 
-All images within a directory are processed together to provide a single value (and uncertainty) for each canopy biophysical variable. Therefore, each directory should correspond to a single measurement plot, which typically contains between 5 and 15 images.
+- [truth_join/truth_joined_to_hemipy.csv](truth_join/truth_joined_to_hemipy.csv)
 
-## Processing options
+This produces a single table containing both:
 
-The `hemipy.process()` function is highly configurable, and includes the ability to:
-* Specify the angular resolution at which gap fraction should be computed (`zenith_bin`, `azimuth_bin`, default is 10°);
-* Define the maximum zenith angle to use for the computation of FCOVER, from 0° to the chosen value (`fcover_zenith`, default is 10°);
-* Specify the local solar time at which to compute instantaneous black-sky FIPAR (`solar_time`, default is 10:00);
-* Use the zenith rings defined in the computation of PAI according to Miller (1967) for deriving FIPAR, FCOVER, and PAI according to the hinge approach (`use_miller_rings`, default is False, i.e. to use dedicated rings centred at the solar zenith angle, nadir, and 57.5°, which is more accurate, but will increase computation time). If True, the rings with the closest central zenith angle are used;
-* Set a minimum and maximum zenith angle of analysis for the computation of PAI according to Miller (1967), e.g. to avoid the effects of mixed pixels at the extremes of the image (Jonckheere et al., 2004) (`min_zenith`, default is 0°, `max_zenith`, default is 60°);
-* Apply a mask of a specified size to the bottom of downwards-facing images (`mask`, useful for removing the operator’s legs, default is a 90° mask);
-* Specify a downsampling factor to speed up the computation (`down_factor`, default is 3);
-* Define the ‘saturated’ PAI value used to compute the gap fraction of cells with no gaps (`pai_sat`, only applicable to the computation of PAI, default is 8) (Chianucci, 2013; Weiss and Baret, 2017).
-* Specify whether to pre-process RAW images (e.g. as recommended by Macfarlane et al. (2014)) (`pre_process_raw`, default is True);
-* Specify whether zeros should be ignored by Ridler and Calvard's (1978) clustering algorithm, which may be useful if processing circular fisheye images (`ignore_zeros`, default is False);
-* Specify whether to save the binarised image to the same directory as the input image as an 8-bit PNG (canopy = 0, gaps = 255), which may be useful for quality control purposes (`save_bin_img`, default is False).
+- HemiPy-predicted values from the simulation images
+- Truth/reference values from the Excel file
 
-## Processing example
+### 3) Evaluated prediction quality (metrics + residuals)
 
-The example below demonstrates how `hemipy` can be used to process a set of images with the following directory structure:
+To quantify agreement between predictions and truth, I added an evaluation step:
 
-* example_data
-  - plot_a
-    - overstory
-      - image_1, image_2, ..., image_14, image_15
-    - understory
-      - image_1, image_2, ..., image_14, image_15
-	  
-**Note that the images in the `example_data` folder of this repository do not reflect best-case illumination conditions (i.e. uniform overcast skies or close to sunrise/sunset), and are provided purely to demonstrate the operation of the code!**
+- [estimations_eval/evaluate_estimations.py](estimations_eval/evaluate_estimations.py)
 
+Outputs:
+
+- [estimations_eval/estimation_metrics_summary.csv](estimations_eval/estimation_metrics_summary.csv)
+- [estimations_eval/estimation_residuals.csv](estimations_eval/estimation_residuals.csv)
+
+### 4) Prepared an image-level ML dataset index
+
+To support ML experiments, I added a script that converts the simulation folder structure into an “image dataset index” CSV:
+
+- [dataset_index/build_image_dataset_index.py](dataset_index/build_image_dataset_index.py)
+
+Output:
+
+- [dataset_index/image_dataset_index.csv](dataset_index/image_dataset_index.csv)
+
+This index is used by the baseline models (feature baseline and CNN baseline) to locate images and their associated labels.
+
+Notes:
+
+- Hinge-region truth columns in the joined truth table may appear as strings like `1.66+/-0.06`; the dataset index builder parses these into numeric values so hinge CNN training has valid labels.
+- Hinge-region truth is expected to be present for **ERECT** and **PLANO**; **RND** typically has missing hinge truth in the provided dataset.
+
+### 5) Started ML baselines (including a CNN)
+
+I am currently working toward training models to predict biophysical variables from the images.
+
+- Simple baseline features + metrics: [image_baseline/image_baseline_features.py](image_baseline/image_baseline_features.py)
+  - Output: [image_baseline/image_baseline_metrics.csv](image_baseline/image_baseline_metrics.csv)
+- CNN baseline training: [cnn_baseline/train_cnn_pai.py](cnn_baseline/train_cnn_pai.py)
+  - Outputs are written as CSVs and plots; see **Where to find CNN results** below.
+
+Current status: the CNN baseline is actively developed and produces strong correlation with PAI (with optional post-hoc calibration to remove systematic bias).
+
+Note: the CNN baseline requires PyTorch/torchvision and Pillow.
+
+### 6) Added a pipeline runner
+
+To make the workflow easier to reproduce, I added:
+
+- [run_pipeline.py](run_pipeline.py)
+
+It runs the steps in order (and optionally includes the CNN step).
+
+## Quick start (this fork)
+
+From the repo root, run (using your Python executable):
+
+- `python run_pipeline.py` (runs truth join → dataset index → image baseline → evaluation)
+- `python run_pipeline.py --include-cnn` (also attempts CNN training)
+
+## Note on generated CSV outputs
+
+Some of the CSV files in this repository (e.g., simulation outputs, joined truth tables, and baseline prediction outputs) are generated artifacts that can take a while to reproduce.
+They are intentionally kept under version control during active development so results can be inspected and shared without rerunning long jobs.
+
+## Where to find CNN results
+
+The CNN baseline produces multiple output files (progress, metrics, per-image predictions, per-site/case predictions, and plots). To keep the root [cnn_baseline/](cnn_baseline/) folder clean, runs are archived under:
+
+- [cnn_baseline/archive/](cnn_baseline/archive/)
+
+The most recent run paths are tracked in:
+
+- [cnn_baseline/latest_run.txt](cnn_baseline/latest_run.txt)
+
+Training progress is written to a CSV (intended for live monitoring). Runs are disambiguated by a `run_id` column so multiple runs can share a single progress file.
+
+### Calibration outputs
+
+We support post-hoc linear calibration to reduce bias:
+
+- Script: [cnn_baseline/calibrate_cnn_outputs.py](cnn_baseline/calibrate_cnn_outputs.py)
+
+Calibration options:
+
+- **Leakage-safe CV reporting:** use the `cal_oof_foldwise` outputs (fits calibration on other folds, then applies to the held-out fold).
+- **Best corrected predictions for deployment:** use the `cal_global_casefit` outputs (fits calibration on all OOF points; best RMSE/MAE but optimistic as a CV score).
+
+Plots are generated via:
+
+- [cnn_baseline/visualize_cnn_results.py](cnn_baseline/visualize_cnn_results.py)
+
+## Hinge-region PAIe + clumping (cnn_hinge)
+
+The hinge region is the zenith angle neighborhood around ~57.3° (often referenced as 57.5° in the literature). In this repo we treat hinge-region **PAIe** as **orientation-dependent**, and compute hinge-region clumping as:
+
+$$\Omega_{hinge} = \frac{PAIe_{hinge}}{PAI}$$
+
+### 1) Ensure the dataset index contains hinge labels
+
+The image dataset index is built from the simulation folder structure and joined to truth values. For hinge training you need the numeric column:
+
+- `truth_PAIe_hinge`
+
+Build (or rebuild) the index:
+
+```bash
+python dataset_index/build_image_dataset_index.py --out dataset_index/image_dataset_index.csv
 ```
-#import required modules
-import numpy as np
-import hemipy, glob, exifread
 
-#define input directory (sub-directories correspond to measurement plots and contain images from that plot)
-input_dir = 'example_data/'
-#define latitude of the site (necessary for FIPAR computation)
-lat = 51.7734
+### 2) Train a hinge PAIe CNN
 
-#define image size and optical centre
-img_size = np.array([3465, 5202])
-opt_cen = np.array([1754, 2595])
-#define calibration function coefficients (^3, ^2 and ^1)
-cal_fun = np.array([0,0,0.0548543])
+Training script:
 
-#calculate the zenith and azimuth angle of each pixel
-zenith = hemipy.zenith(img_size, opt_cen, cal_fun)
-azimuth = hemipy.azimuth(img_size, opt_cen)
+- [cnn_hinge/train_cnn_paie_hinge.py](cnn_hinge/train_cnn_paie_hinge.py)
 
-#open output file and write header
-output_file = open('examples/example_output.csv', 'w')
-output_file.write('Date,Plot,Direction,PAIe_Hinge,PAI_Hinge,Clumping_Hinge,PAIe_Miller,PAI_Miller,Clumping_Miller,FIPAR,FCOVER\n')
+It produces metrics/per-image/per-site CSVs and writes a live-updated progress CSV (by default):
 
-#locate and loop through measurement plots
-plots = glob.glob(input_dir + '/*')
-for i in range(len(plots)):
-    layers = glob.glob(plots[i] + '/*')
-    
-    #locate and loop through understory/overstory layers
-    for j in range(len(layers)):       
-        #open first image in folder and retrieve date and time from EXIF data
-        image = open(glob.glob(layers[j]+'/*.cr2')[0], 'rb')
-        tags = exifread.process_file(image)
-        #determine date of plot acquisition
-        date = str(tags['EXIF DateTimeOriginal'])[0:10].replace(':', '-')
-        
-        #determine image direction
-        if 'overstory' in layers[j]:
-            direction = 'up'
-        elif 'understory' in layers[j]:
-            direction = 'down'
-            
-        #run the main function and write results to output file
-        results = hemipy.process(layers[j], zenith, azimuth, date = date, lat = lat, direction = direction)     
-        output_file.write(date + ',' +\
-                          layers[j].split('\\')[-2] + ',' +\
-                          direction + ',' +\
-                          str(results['paie_hinge']) + ',' +\
-                          str(results['pai_hinge']) + ',' +\
-                          str(results['clumping_hinge']) + ',' +\
-                          str(results['paie_miller']) + ',' +\
-                          str(results['pai_miller']) + ',' +\
-                          str(results['clumping_miller']) + ',' +\
-                          str(results['fipar']) + ',' +\
-                          str(results['fcover']) + '\n')
+- `cnn_hinge/cnn_hinge_training_progress.csv`
 
-#close output file
-output_file.close()
+Progress CSV notes:
+
+- Each row includes `run_id` so you can append multiple runs into a single file.
+- Batch-level rows are optional (see `--log-batches`) and are off by default.
+
+Archived runs:
+
+- Hinge CNN runs are archived under [cnn_hinge/archive/](cnn_hinge/archive/) (raw outputs, derived clumping outputs, plots, and a snapshot of logs/progress).
+- The most recent archived run id is stored in [cnn_hinge/latest_run.txt](cnn_hinge/latest_run.txt).
+
+Example (ERECT + PLANO only):
+
+```bash
+python cnn_hinge/train_cnn_paie_hinge.py \
+  --index dataset_index/image_dataset_index.csv \
+  --orientations ERECT PLANO \
+  --epochs 25 --early-stop 6 --aug --aug-hflip --aug-color-jitter 0.1 \
+  --nonnegative-head \
+  --run-id 20260127_paie_hinge_ep25_aug_es
 ```
 
-## References
+Batch-level progress logging is optional and **off by default** (to keep the CSV readable). If you want it:
 
-Chianucci, F., 2013. *Canopy Properties Estimation in Deciduous Forests with Digital Photography*. Università degli Studi della Tuscia.
+```bash
+python cnn_hinge/train_cnn_paie_hinge.py --log-batches ...
+```
 
-Jonckheere, I., Fleck, S., Nackaerts, K., Muys, B., Coppin, P., Weiss, M., Baret, F., 2004. Review of methods for in situ leaf area index determination. *Agric. For. Meteorol.* 121, 19–35. https://doi.org/10.1016/j.agrformet.2003.08.027
+### 3) Monitor training progress
 
-Lang, A.R.G., Yueqin, X., 1986. Estimation of leaf area index from transmission of direct sunlight in discontinuous canopies. *Agric. For. Meteorol.* 37, 229–243. https://doi.org/10.1016/0168-1923(86)90033-X
+To summarize the progress CSV (latest + per-fold latest/best), use:
 
-Leblanc, S.G., Chen, J.M., Fernandes, R., Deering, D.W., Conley, A., 2005. Methodology comparison for canopy structure parameters extraction from digital hemispherical photography in boreal forests. *Agric. For. Meteorol.* 129, 187–207. https://doi.org/10.1016/j.agrformet.2004.09.006
+- [cnn_hinge/summarize_progress.py](cnn_hinge/summarize_progress.py)
 
-Macfarlane, C., Grigg, A., Evangelista, C., 2007. Estimating forest leaf area using cover and fullframe fisheye photography: Thinking inside the circle. *Agric. For. Meteorol.* 146, 1–12. https://doi.org/10.1016/j.agrformet.2007.05.001
+```bash
+python cnn_hinge/summarize_progress.py
+```
 
-Macfarlane, C., Ryu, Y., Ogden, G.N., Sonnentag, O., 2014. Digital canopy photography: Exposed and in the raw. *Agric. For. Meteorol.* 197, 244–253. https://doi.org/10.1016/j.agrformet.2014.05.014
+By default, the summarizer will try to use the run id from [cnn_hinge/latest_run.txt](cnn_hinge/latest_run.txt).
 
-Miller, J., 1967. A formula for average foliage density. *Aust. J. Bot.* 15, 141–144. https://doi.org/10.1071/BT9670141
+If multiple runs share the same progress CSV, pass `--run-id` explicitly:
 
-Warren-Wilson, J., 1963. Estimation of foliage denseness and foliage angle by inclined point quadrats. *Aust. J. Bot.* 11, 95–105.
+```bash
+python cnn_hinge/summarize_progress.py --run-id 20260127_paie_hinge_ep25_aug_es
+```
 
-Weiss, M., Baret, F., 2017. *CAN-EYE V6.4.91 User Manual*. Institut National de la Recherche Agronomique, Avignon, France.
+### 4) Compute clumping-hinge from PAI (baseline) + PAIe-hinge (hinge CNN)
 
-Zhang, Y., Chen, J.M., Miller, J.R., 2005. Determining digital hemispherical photograph exposure for leaf area index estimation. *Agric. For. Meteorol.* 133, 166–181. https://doi.org/10.1016/j.agrformet.2005.09.009
+Clumping-hinge is computed by combining per-site predictions:
+
+- baseline PAI per-site predictions (from `cnn_baseline/`)
+- hinge PAIe per-site predictions (from `cnn_hinge/`)
+
+Script:
+
+- [cnn_hinge/compute_clumping_hinge.py](cnn_hinge/compute_clumping_hinge.py)
+
+### 5) Visualize hinge/clumping results
+
+Plots are generated via:
+
+- [cnn_hinge/visualize_cnn_hinge_results.py](cnn_hinge/visualize_cnn_hinge_results.py)
+
+## Credit / citation
+
+Please credit and cite the original HemiPy authors as described in [OldREADME.md](OldREADME.md) and [CITATION.cff](CITATION.cff).
+
+## License
+
+See [LICENSE.md](LICENSE.md).
