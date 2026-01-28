@@ -53,5 +53,11 @@ lightning_logs/
 /cnn_baseline/cnn_training_progress*.csv
 /cnn_baseline/run_*.log
 
+# CNN hinge generated outputs
+/cnn_hinge/archive/
+/cnn_hinge/*.csv
+/cnn_hinge/*.png
+/cnn_hinge/logs/
+
 # If you don't want to version generated CSV outputs, uncomment:
 # *.csv

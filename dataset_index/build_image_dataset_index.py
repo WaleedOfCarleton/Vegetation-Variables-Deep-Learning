@@ -16,6 +16,33 @@ DEFAULT_OUT = HERE / "image_dataset_index.csv"
 IMG_EXTS = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
 
 
+def _parse_pm_value(x):
+    """Parse values like '1.66+/-0.06' -> 1.66.
+
+    Falls back to pandas numeric coercion when possible.
+    """
+    if x is None or (isinstance(x, float) and pd.isna(x)):
+        return pd.NA
+    if isinstance(x, (int, float)):
+        return float(x)
+    s = str(x).strip()
+    if s == "" or s.lower() == "nan":
+        return pd.NA
+
+    if "+/-" in s:
+        left = s.split("+/-", 1)[0].strip()
+        try:
+            return float(left)
+        except Exception:
+            return pd.NA
+
+    # Generic numeric parse (handles plain strings)
+    v = pd.to_numeric(s, errors="coerce")
+    if pd.isna(v):
+        return pd.NA
+    return float(v)
+
+
 def _normalize_case(case_part: str) -> str | None:
     m = re.search(r"case\s*(\d+)", case_part, flags=re.IGNORECASE)
     if not m:
@@ -118,11 +145,28 @@ def main() -> int:
     if missing:
         raise ValueError(f"Truth CSV missing columns: {sorted(missing)}")
 
-    keep_cols = [c for c in ["case_norm", "truth_PAI", "truth_LAI", "truth_Clumping", "truth_sim_id"] if c in truth.columns]
+    keep_cols = [
+        c
+        for c in [
+            "case_norm",
+            "orientation",
+            "truth_PAI",
+            "truth_LAI",
+            "truth_Clumping",
+            "truth_sim_id",
+            "PAIe_Hinge",
+            "Clumping_Hinge",
+        ]
+        if c in truth.columns
+    ]
     truth_small = truth[keep_cols].copy()
-    for c in ["truth_PAI", "truth_LAI", "truth_Clumping"]:
+    for c in ["truth_PAI", "truth_LAI", "truth_Clumping", "PAIe_Hinge", "Clumping_Hinge"]:
         if c in truth_small.columns:
-            truth_small[c] = pd.to_numeric(truth_small[c], errors="coerce")
+            # Some hinge columns are strings like '1.66+/-0.06'
+            if c in {"PAIe_Hinge", "Clumping_Hinge"}:
+                truth_small[c] = truth_small[c].map(_parse_pm_value)
+            else:
+                truth_small[c] = pd.to_numeric(truth_small[c], errors="coerce")
 
     def _first_nonnull(s: pd.Series):
         s2 = s.dropna()
@@ -139,10 +183,30 @@ def main() -> int:
     truth_case = truth_small.groupby("case_norm", as_index=False).agg(agg)
     out = index_df.merge(truth_case, on=["case_norm"], how="left", validate="many_to_one")
 
+    # For hinge-region PAIe and clumping (VZA ~57.3°), the values are orientation-specific.
+    # Join on (case_norm, orientation) so ERECT/PLANO/RND keep distinct labels.
+    if {"case_norm", "orientation", "PAIe_Hinge"}.issubset(set(truth_small.columns)):
+        hinge_cols = [c for c in ["case_norm", "orientation", "PAIe_Hinge", "Clumping_Hinge"] if c in truth_small.columns]
+        hinge = truth_small[hinge_cols].copy()
+        hinge = hinge.dropna(subset=["case_norm", "orientation"], how="any")
+        hinge_agg = {"PAIe_Hinge": "mean"}
+        if "Clumping_Hinge" in hinge.columns:
+            hinge_agg["Clumping_Hinge"] = "mean"
+        hinge = hinge.groupby(["case_norm", "orientation"], as_index=False).agg(hinge_agg)
+        hinge = hinge.rename(
+            columns={
+                "PAIe_Hinge": "truth_PAIe_hinge",
+                "Clumping_Hinge": "truth_Clumping_hinge",
+            }
+        )
+        out = out.merge(hinge, on=["case_norm", "orientation"], how="left", validate="many_to_one")
+
     out.to_csv(args.out, index=False)
     print("Wrote:", args.out)
     print("Images:", len(out))
     print("Missing truth_PAI:", int(out["truth_PAI"].isna().sum()))
+    if "truth_PAIe_hinge" in out.columns:
+        print("Missing truth_PAIe_hinge:", int(out["truth_PAIe_hinge"].isna().sum()))
     print("Orientations:\n", out["orientation"].value_counts(dropna=False))
     return 0
 
