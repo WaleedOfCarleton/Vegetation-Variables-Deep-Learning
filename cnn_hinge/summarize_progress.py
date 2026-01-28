@@ -21,11 +21,14 @@ def _parse_ts_utc(s: str) -> datetime | None:
 
 
 def _pick_run_id(args_run_id: str | None) -> str | None:
+    def _clean(v: str) -> str:
+        return str(v).strip().lstrip("\ufeff")
+
     if args_run_id:
-        v = str(args_run_id).strip()
+        v = _clean(args_run_id)
         return v if v else None
     if DEFAULT_LATEST.exists():
-        v = DEFAULT_LATEST.read_text(encoding="utf-8").strip()
+        v = _clean(DEFAULT_LATEST.read_text(encoding="utf-8"))
         return v if v else None
     return None
 
@@ -58,11 +61,22 @@ def main() -> int:
         )
 
     run_id = _pick_run_id(args.run_id)
+    if not run_id:
+        # Auto-pick most recent run_id from the CSV (by timestamp_utc when possible).
+        if "timestamp_utc" in df.columns:
+            ts = df["timestamp_utc"].map(_parse_ts_utc)
+            if ts.notna().any():
+                run_id = str(df.loc[ts.idxmax(), "run_id"]).strip()
+        if not run_id:
+            # Fallback: last row in file order
+            run_id = str(df.iloc[-1]["run_id"]).strip()
+        run_id = run_id if run_id else None
     if run_id:
         df = df[df["run_id"].astype(str) == run_id].copy()
         if df.empty:
             print(f"No rows found for run_id={run_id!r}.")
             return 0
+        print(f"(auto) using run_id={run_id}")
 
     # parse timestamps for sorting
     if "timestamp_utc" in df.columns:
