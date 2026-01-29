@@ -9,11 +9,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent
 
 STEPS = {
-    "truth_join": REPO_ROOT / "truth_join" / "join_truth_to_hemipy.py",
-    "dataset_index": REPO_ROOT / "dataset_index" / "build_image_dataset_index.py",
-    "image_baseline": REPO_ROOT / "image_baseline" / "image_baseline_features.py",
-    "cnn_baseline": REPO_ROOT / "cnn_baseline" / "train_cnn_pai.py",
-    "estimations_eval": REPO_ROOT / "estimations_eval" / "evaluate_estimations.py",
+    "truth_join": REPO_ROOT / "shared" / "truth_join" / "join_truth_to_hemipy.py",
+    "dataset_index": REPO_ROOT / "shared" / "dataset_index" / "build_image_dataset_index.py",
+    "image_baseline": REPO_ROOT / "ml" / "image_baseline" / "image_baseline_features.py",
+    "cnn_baseline": REPO_ROOT / "ml" / "cnn_baseline" / "train_cnn_pai.py",
+    "estimations_eval": REPO_ROOT / "shared" / "estimations_eval" / "evaluate_estimations.py",
 }
 
 

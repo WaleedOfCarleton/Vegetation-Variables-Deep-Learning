@@ -31,8 +31,20 @@ except Exception as e:
 
 
 HERE = Path(__file__).resolve().parent
-REPO_ROOT = HERE.parent
-DEFAULT_INDEX = REPO_ROOT / "dataset_index" / "image_dataset_index.csv"
+
+
+def _find_repo_root(start: Path) -> Path:
+    start = start.resolve()
+    for p in [start] + list(start.parents):
+        if (p / "Simulations").exists() and (p / "shared").exists() and (p / "ml").exists():
+            return p
+        if (p / ".git").exists():
+            return p
+    return start
+
+
+REPO_ROOT = _find_repo_root(HERE)
+DEFAULT_INDEX = REPO_ROOT / "shared" / "dataset_index" / "image_dataset_index.csv"
 
 DEFAULT_OUT_METRICS = HERE / "cnn_hinge_metrics.csv"
 DEFAULT_OUT_PER_IMAGE = HERE / "cnn_hinge_per_image_predictions.csv"
@@ -307,6 +319,14 @@ def main() -> int:
     p = argparse.ArgumentParser(description="Train CNN to predict hinge-region PAIe (VZA ~57.3°).")
     p.add_argument("--index", type=Path, default=DEFAULT_INDEX)
 
+    p.add_argument(
+        "--run-root",
+        type=str,
+        default="working",
+        choices=["working", "archive"],
+        help="Where to place run folders when --run-id is used. Default: working",
+    )
+
     p.add_argument("--out-metrics", type=Path, default=DEFAULT_OUT_METRICS)
     p.add_argument("--out-per-image", type=Path, default=DEFAULT_OUT_PER_IMAGE)
     p.add_argument("--out-per-site", type=Path, default=DEFAULT_OUT_PER_SITE)
@@ -367,7 +387,7 @@ def main() -> int:
     if missing:
         raise SystemExit(
             f"Index missing columns {sorted(missing)}. "
-            f"Rebuild dataset index to include {TARGET_COL} (run dataset_index/build_image_dataset_index.py)."
+            f"Rebuild dataset index to include {TARGET_COL} (run shared/dataset_index/build_image_dataset_index.py)."
         )
 
     if args.orientations:
@@ -381,15 +401,26 @@ def main() -> int:
 
     # Naming
     run_id = args.run_id.strip()
-    suffix = f"_{run_id}" if run_id else ""
     out_metrics = Path(args.out_metrics)
     out_per_image = Path(args.out_per_image)
     out_per_site = Path(args.out_per_site)
 
-    if suffix:
-        out_metrics = out_metrics.with_name(out_metrics.stem + suffix + out_metrics.suffix)
-        out_per_image = out_per_image.with_name(out_per_image.stem + suffix + out_per_image.suffix)
-        out_per_site = out_per_site.with_name(out_per_site.stem + suffix + out_per_site.suffix)
+    # If run_id is provided and outputs are still defaults, put them under cnn_hinge/<run_root>/<run_id>/raw/
+    if run_id:
+        run_dir = HERE / str(args.run_root) / run_id
+        raw_dir = run_dir / "raw"
+        raw_dir.mkdir(parents=True, exist_ok=True)
+
+        if out_metrics.resolve() == DEFAULT_OUT_METRICS.resolve():
+            out_metrics = raw_dir / "cnn_hinge_metrics.csv"
+        if out_per_image.resolve() == DEFAULT_OUT_PER_IMAGE.resolve():
+            out_per_image = raw_dir / "cnn_hinge_per_image_predictions.csv"
+        if out_per_site.resolve() == DEFAULT_OUT_PER_SITE.resolve():
+            out_per_site = raw_dir / "cnn_hinge_per_site_predictions.csv"
+
+        # Keep any archived rerun outputs inside the run folder.
+        if Path(args.archive_dir).resolve() == (HERE / "archive").resolve():
+            args.archive_dir = run_dir / "_old"
 
     if args.archive_existing:
         for pth in [out_metrics, out_per_image, out_per_site]:

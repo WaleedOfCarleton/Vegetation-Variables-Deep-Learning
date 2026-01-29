@@ -9,8 +9,9 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+HEMIPY_ROOT = REPO_ROOT / "hemipy_core"
+if str(HEMIPY_ROOT) not in sys.path:
+    sys.path.insert(0, str(HEMIPY_ROOT))
 
 import hemipy
 

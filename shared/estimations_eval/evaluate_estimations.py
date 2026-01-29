@@ -8,8 +8,20 @@ import pandas as pd
 
 
 HERE = Path(__file__).resolve().parent
-REPO_ROOT = HERE.parent
-DEFAULT_IN = REPO_ROOT / "truth_join" / "truth_joined_to_hemipy.csv"
+
+
+def _find_repo_root(start: Path) -> Path:
+    start = start.resolve()
+    for p in [start] + list(start.parents):
+        if (p / "Simulations").exists() and (p / "shared").exists() and (p / "ml").exists():
+            return p
+        if (p / ".git").exists():
+            return p
+    return start
+
+
+REPO_ROOT = _find_repo_root(HERE)
+DEFAULT_IN = REPO_ROOT / "shared" / "truth_join" / "truth_joined_to_hemipy.csv"
 DEFAULT_OUT_METRICS = HERE / "estimation_metrics_summary.csv"
 DEFAULT_OUT_RESIDUALS = HERE / "estimation_residuals.csv"
 

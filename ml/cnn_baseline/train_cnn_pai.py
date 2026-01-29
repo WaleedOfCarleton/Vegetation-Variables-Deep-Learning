@@ -32,13 +32,149 @@ except Exception as e:
 
 
 HERE = Path(__file__).resolve().parent
-REPO_ROOT = HERE.parent
-DEFAULT_INDEX = REPO_ROOT / "dataset_index" / "image_dataset_index.csv"
+
+
+def _find_repo_root(start: Path) -> Path:
+    start = start.resolve()
+    for p in [start] + list(start.parents):
+        if (p / "Simulations").exists() and (p / "shared").exists() and (p / "ml").exists():
+            return p
+        if (p / ".git").exists():
+            return p
+    return start
+
+
+REPO_ROOT = _find_repo_root(HERE)
+DEFAULT_INDEX = REPO_ROOT / "shared" / "dataset_index" / "image_dataset_index.csv"
 
 DEFAULT_OUT_METRICS = HERE / "cnn_baseline_metrics.csv"
 DEFAULT_OUT_PER_IMAGE = HERE / "cnn_per_image_predictions.csv"
 DEFAULT_OUT_PER_SITE = HERE / "cnn_per_site_predictions.csv"
 DEFAULT_PROGRESS_CSV = HERE / "cnn_training_progress.csv"
+
+
+def _path_is_default(value: Path, default: Path) -> bool:
+    try:
+        return Path(value).resolve() == Path(default).resolve()
+    except Exception:
+        return str(value) == str(default)
+
+
+def _apply_run_dir_defaults(args: argparse.Namespace) -> None:
+    """If --run-id is provided, redirect default outputs into working/<run-id>/... .
+
+    We only override paths that are still set to their defaults, so explicit CLI
+    overrides win.
+    """
+
+    run_id = str(getattr(args, "run_id", "") or "").strip()
+    if not run_id:
+        return
+
+    run_root = str(getattr(args, "run_root", "working") or "working").strip().lower()
+    if run_root not in {"working", "archive"}:
+        raise ValueError("--run-root must be one of: working, archive")
+
+    run_dir = HERE / run_root / run_id
+    raw_dir = run_dir / "raw"
+    models_dir = run_dir / "models"
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    models_dir.mkdir(parents=True, exist_ok=True)
+
+    if _path_is_default(Path(args.out_metrics), DEFAULT_OUT_METRICS):
+        args.out_metrics = raw_dir / "cnn_baseline_metrics.csv"
+    if _path_is_default(Path(args.out_per_image), DEFAULT_OUT_PER_IMAGE):
+        args.out_per_image = raw_dir / "cnn_per_image_predictions.csv"
+    if _path_is_default(Path(args.out_per_site), DEFAULT_OUT_PER_SITE):
+        args.out_per_site = raw_dir / "cnn_per_site_predictions.csv"
+    if (not bool(args.no_progress_csv)) and _path_is_default(Path(args.progress_csv), DEFAULT_PROGRESS_CSV):
+        args.progress_csv = raw_dir / "cnn_training_progress.csv"
+
+    if args.models_dir is None:
+        args.models_dir = models_dir
+
+    if args.split_out is None:
+        args.split_out = raw_dir / "case_split.csv"
+
+    # Keep rerun archives within the run folder (instead of polluting cnn_baseline/archive).
+    if _path_is_default(Path(args.archive_dir), HERE / "archive"):
+        args.archive_dir = run_dir / "_old"
+
+
+def _write_latest_run_baseline(path: Path, *, run_id: str, out_metrics: Path, out_per_image: Path, out_per_site: Path, progress_csv: Path | None, models_dir: Path) -> None:
+    """Write cnn_baseline/latest_run.txt in a stable, click-friendly format."""
+    lines: list[str] = []
+    lines.append(f"runId={run_id}")
+    lines.append("")
+    lines.append("[raw]")
+    if progress_csv is not None:
+        lines.append(f"progress={Path(progress_csv).resolve()}")
+    lines.append(f"metrics={Path(out_metrics).resolve()}")
+    lines.append(f"per_image={Path(out_per_image).resolve()}")
+    lines.append(f"per_site={Path(out_per_site).resolve()}")
+    lines.append(f"plots_dir={Path(out_metrics).resolve().parent}")
+    lines.append(f"models_dir={Path(models_dir).resolve()}")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _default_run_dir(out_metrics: Path) -> Path:
+    """Choose a stable folder to place auxiliary outputs (models/splits).
+
+    We anchor to the folder containing the primary outputs so that archived runs
+    keep everything together.
+    """
+    return Path(out_metrics).resolve().parent
+
+
+def _pick_holdout_cases(
+    cases: list[str],
+    *,
+    holdout_fraction: float,
+    holdout_n_cases: int | None,
+    seed: int,
+) -> set[str]:
+    if holdout_n_cases is not None and holdout_n_cases < 0:
+        raise ValueError("--holdout-n-cases must be >= 0")
+
+    frac = float(holdout_fraction)
+    if frac < 0.0 or frac >= 1.0:
+        raise ValueError("--holdout-fraction must be in [0, 1)")
+
+    if holdout_n_cases is None:
+        n = int(round(len(cases) * frac))
+    else:
+        n = int(holdout_n_cases)
+
+    if n <= 0:
+        return set()
+    if n >= len(cases):
+        raise ValueError("Holdout would consume all cases; reduce holdout size.")
+
+    rng = np.random.default_rng(int(seed))
+    picked = rng.choice(np.asarray(cases, dtype=object), size=n, replace=False)
+    return {str(x) for x in picked}
+
+
+def _read_case_list(path: Path) -> set[str]:
+    """Reads a list of case_norm values from a txt/csv (first column)."""
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"Holdout cases file not found: {path}")
+
+    if path.suffix.lower() == ".csv":
+        df = pd.read_csv(path)
+        if df.empty:
+            return set()
+        col = "case_norm" if "case_norm" in df.columns else df.columns[0]
+        return {str(x).strip() for x in df[col].dropna().astype(str).tolist() if str(x).strip()}
+
+    # txt/other: one case per line
+    cases = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        s = line.strip()
+        if s and not s.startswith("#"):
+            cases.add(s)
+    return cases
 
 
 def _utc_stamp() -> str:
@@ -62,6 +198,33 @@ def _archive_existing_file(path: Path, archive_dir: Path) -> Path | None:
 
 def _copy_state_dict_to_cpu(model: torch.nn.Module) -> dict:
     return {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+
+
+def _save_checkpoint(
+    path: Path,
+    *,
+    state_dict: dict,
+    backbone: str,
+    image_size: int,
+    nonnegative_head: bool,
+    pred_min: float | None,
+    seed: int,
+    fold: int | None,
+    extra: dict | None = None,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "state_dict": state_dict,
+        "backbone": str(backbone),
+        "image_size": int(image_size),
+        "nonnegative_head": bool(nonnegative_head),
+        "pred_min": pred_min,
+        "seed": int(seed),
+        "fold": fold,
+    }
+    if extra:
+        payload.update(extra)
+    torch.save(payload, str(path))
 
 
 class ProgressWriter:
@@ -326,6 +489,23 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--index", type=Path, default=DEFAULT_INDEX)
 
+    p.add_argument(
+        "--run-id",
+        type=str,
+        default="",
+        help=(
+            "Optional run id. If set, default outputs go under cnn_baseline/<run_root>/<run_id>/. "
+            "Example: --run-id 20260129_pai_ep25_holdout10"
+        ),
+    )
+    p.add_argument(
+        "--run-root",
+        type=str,
+        default="working",
+        choices=["working", "archive"],
+        help="Where to place run folders when --run-id is used. Default: working",
+    )
+
     p.add_argument("--out-metrics", type=Path, default=DEFAULT_OUT_METRICS)
     p.add_argument("--out-per-image", type=Path, default=DEFAULT_OUT_PER_IMAGE)
     p.add_argument("--out-per-site", type=Path, default=DEFAULT_OUT_PER_SITE)
@@ -363,6 +543,65 @@ def main() -> int:
 
     p.add_argument("--kfold", type=int, default=5)
     p.add_argument("--seed", type=int, default=0)
+
+    p.add_argument(
+        "--holdout-fraction",
+        type=float,
+        default=0.0,
+        help=(
+            "Optional case-level holdout fraction (e.g., 0.1 = hold out ~10%% of unique case_norm). "
+            "Holdout cases are excluded from all CV folds and can be used for manual testing later."
+        ),
+    )
+    p.add_argument(
+        "--holdout-n-cases",
+        type=int,
+        default=None,
+        help="Optional absolute number of unique case_norm to hold out (overrides --holdout-fraction).",
+    )
+    p.add_argument(
+        "--holdout-cases-file",
+        type=Path,
+        default=None,
+        help="Optional txt/csv listing case_norm values to hold out (one per line, or CSV with case_norm column).",
+    )
+    p.add_argument(
+        "--split-out",
+        type=Path,
+        default=None,
+        help="Optional path to write the case split CSV (case_norm, split). Default: next to --out-metrics.",
+    )
+
+    p.add_argument(
+        "--save-models",
+        action="store_true",
+        default=True,
+        help="Save fold checkpoints (and an optional final model) for later inference.",
+    )
+    p.add_argument(
+        "--no-save-models",
+        action="store_false",
+        dest="save_models",
+        help="Disable saving checkpoints.",
+    )
+    p.add_argument(
+        "--save-final-model",
+        action="store_true",
+        default=True,
+        help="Also train a final model on all non-holdout data and save it.",
+    )
+    p.add_argument(
+        "--no-save-final-model",
+        action="store_false",
+        dest="save_final_model",
+        help="Disable training/saving a final model on all non-holdout data.",
+    )
+    p.add_argument(
+        "--models-dir",
+        type=Path,
+        default=None,
+        help="Where to save model checkpoints/split files. Default: <out-metrics folder>/models/.",
+    )
 
     p.add_argument("--epochs", type=int, default=6)
     p.add_argument("--batch-size", type=int, default=32)
@@ -436,6 +675,9 @@ def main() -> int:
     p.add_argument("--max-images", type=int, default=None, help="Optional cap for quick tests.")
     args = p.parse_args()
 
+    # If a run id is provided, redirect default outputs into working/<run-id>/...
+    _apply_run_dir_defaults(args)
+
     set_seed(int(args.seed))
 
     device = torch.device("cpu" if args.cpu or not torch.cuda.is_available() else "cuda")
@@ -474,7 +716,42 @@ def main() -> int:
 
     df = df.reset_index(drop=True)
 
-    df["fold"] = make_case_folds(df["case_norm"], kfold=int(args.kfold), seed=int(args.seed))
+    # ---------------------------
+    # Case-level holdout split
+    # ---------------------------
+    uniq_cases = sorted(
+        [c for c in df["case_norm"].astype(str).dropna().unique().tolist() if str(c).strip()]
+    )
+    holdout_cases: set[str] = set()
+    if args.holdout_cases_file is not None:
+        holdout_cases = _read_case_list(Path(args.holdout_cases_file))
+    else:
+        holdout_cases = _pick_holdout_cases(
+            uniq_cases,
+            holdout_fraction=float(args.holdout_fraction),
+            holdout_n_cases=(int(args.holdout_n_cases) if args.holdout_n_cases is not None else None),
+            seed=int(args.seed),
+        )
+
+    df["split"] = np.where(df["case_norm"].astype(str).isin(holdout_cases), "holdout", "train")
+
+    split_out = Path(args.split_out) if args.split_out is not None else (_default_run_dir(Path(args.out_metrics)) / "case_split.csv")
+    split_out.parent.mkdir(parents=True, exist_ok=True)
+    (
+        df[["case_norm", "split"]]
+        .drop_duplicates()
+        .sort_values(["split", "case_norm"], ascending=[True, True])
+        .to_csv(split_out, index=False)
+    )
+    if holdout_cases:
+        print(f"Holdout: {len(holdout_cases)} case(s) excluded from training. Split file: {split_out}")
+    else:
+        print(f"Holdout: none (split file written): {split_out}")
+
+    # Only assign folds over the training split (prevents leakage)
+    train_mask = df["split"].astype(str) == "train"
+    df.loc[train_mask, "fold"] = make_case_folds(df.loc[train_mask, "case_norm"], kfold=int(args.kfold), seed=int(args.seed))
+    df.loc[~train_mask, "fold"] = -1
 
     # Transforms
     # - Validation/test: deterministic resize
@@ -526,6 +803,13 @@ def main() -> int:
     # OOF prediction arrays (image-level)
     oof_pred = np.full(len(df), np.nan, dtype=np.float64)
 
+    # Holdout prediction accumulator (ensemble average over fold models)
+    holdout_df = df[df["split"].astype(str) == "holdout"].copy()
+    holdout_pred_sum: np.ndarray | None = None
+    holdout_pred_count: int = 0
+    if len(holdout_df) > 0:
+        holdout_pred_sum = np.zeros(len(holdout_df), dtype=np.float64)
+
     progress_path: Path | None = None
     if not args.no_progress_csv and args.progress_csv:
         progress_path = Path(args.progress_csv)
@@ -544,8 +828,9 @@ def main() -> int:
 
     with ProgressWriter(progress_path) as progress:
         for fold in range(int(args.kfold)):
-            train_df = df[df["fold"] != fold].copy()
-            test_df = df[df["fold"] == fold].copy()
+            # CV is done only within the train split.
+            train_df = df[(df["split"].astype(str) == "train") & (df["fold"].astype(int) != fold)].copy()
+            test_df = df[(df["split"].astype(str) == "train") & (df["fold"].astype(int) == fold)].copy()
 
             train_ds = HemiImageDataset(train_df, image_root=REPO_ROOT, transform=train_tfm)
             test_ds = HemiImageDataset(test_df, image_root=REPO_ROOT, transform=test_tfm)
@@ -712,10 +997,42 @@ def main() -> int:
                 model.load_state_dict(best_state)
                 model.to(device)
 
+            # Save fold checkpoint for later inference/testing.
+            if bool(args.save_models):
+                run_dir = _default_run_dir(Path(args.out_metrics))
+                models_dir = Path(args.models_dir) if args.models_dir is not None else (run_dir / "models")
+                ckpt_path = models_dir / f"pai_model_fold{fold}.pth"
+                _save_checkpoint(
+                    ckpt_path,
+                    state_dict=_copy_state_dict_to_cpu(model),
+                    backbone=cfg.backbone,
+                    image_size=cfg.image_size,
+                    nonnegative_head=cfg.nonnegative_head,
+                    pred_min=pred_min,
+                    seed=int(args.seed),
+                    fold=int(fold),
+                    extra={"target": "truth_PAI"},
+                )
+
             y_true, y_hat, metas = predict(model, test_loader, device, pred_min=pred_min)
 
             # Store OOF predictions aligned to df index
             oof_pred[test_df.index.to_numpy()] = y_hat
+
+            # Optionally also predict the holdout set with this fold model (for an ensemble).
+            if holdout_pred_sum is not None and len(holdout_df) > 0:
+                holdout_ds = HemiImageDataset(holdout_df, image_root=REPO_ROOT, transform=test_tfm)
+                holdout_loader = DataLoader(
+                    holdout_ds,
+                    batch_size=cfg.batch_size,
+                    shuffle=False,
+                    num_workers=cfg.num_workers,
+                    pin_memory=(device.type == "cuda"),
+                    collate_fn=collate_keep_meta,
+                )
+                _y_true_h, _y_hat_h, _metas_h = predict(model, holdout_loader, device, pred_min=pred_min)
+                holdout_pred_sum += _y_hat_h.astype(np.float64)
+                holdout_pred_count += 1
 
             # Fold metrics (image-level)
             m_img = regression_metrics(y_true, y_hat)
@@ -731,6 +1048,7 @@ def main() -> int:
                     "image_path": metas[i]["image_path"],
                     "case_norm": metas[i]["case_norm"],
                     "orientation": metas[i]["orientation"],
+                    "split": "train",
                     "truth_PAI": float(y_true[i]),
                     "pred_PAI_cnn": float(y_hat[i]),
                 }
@@ -793,7 +1111,8 @@ def main() -> int:
     # OOF metrics (image-level)
     df_out = df.copy()
     df_out["pred_PAI_cnn"] = oof_pred
-    m_oof_img = regression_metrics(df_out["truth_PAI"].to_numpy(), df_out["pred_PAI_cnn"].to_numpy())
+    train_only = df_out[df_out["split"].astype(str) == "train"].copy()
+    m_oof_img = regression_metrics(train_only["truth_PAI"].to_numpy(), train_only["pred_PAI_cnn"].to_numpy())
     metric_rows.append(
         {"cv": "KFold", "fold": "OOF", "level": "image", "target": "truth_PAI", "pred": "cnn", **m_oof_img}
     )
@@ -809,16 +1128,116 @@ def main() -> int:
         {"cv": "KFold", "fold": "OOF", "level": "case_mean", "target": "truth_PAI", "pred": "cnn", **m_oof_site}
     )
 
+    # Append holdout predictions (ensemble over folds) if configured.
+    if holdout_pred_sum is not None and holdout_pred_count > 0:
+        holdout_df_out = holdout_df.copy().reset_index(drop=True)
+        holdout_df_out["pred_PAI_cnn"] = (holdout_pred_sum / float(holdout_pred_count)).astype(np.float64)
+        # Add to per-image table with fold='HOLDOUT' (predictions are ensemble outputs).
+        for i in range(len(holdout_df_out)):
+            per_image_rows.append(
+                {
+                    "cv": "Holdout",
+                    "fold": "ENS",
+                    "image_path": str(holdout_df_out.loc[i, "image_path"]),
+                    "case_norm": str(holdout_df_out.loc[i, "case_norm"]),
+                    "orientation": str(holdout_df_out.loc[i, "orientation"]) if "orientation" in holdout_df_out.columns else "",
+                    "split": "holdout",
+                    "truth_PAI": float(holdout_df_out.loc[i, "truth_PAI"]),
+                    "pred_PAI_cnn": float(holdout_df_out.loc[i, "pred_PAI_cnn"]),
+                    "error": float(holdout_df_out.loc[i, "pred_PAI_cnn"] - holdout_df_out.loc[i, "truth_PAI"]),
+                    "abs_error": float(abs(holdout_df_out.loc[i, "pred_PAI_cnn"] - holdout_df_out.loc[i, "truth_PAI"])),
+                }
+            )
+
+        # Holdout metrics at case_mean level
+        holdout_site = (
+            holdout_df_out.groupby(["case_norm"], as_index=False)
+            .agg(truth_PAI=("truth_PAI", "mean"), pred_PAI_cnn=("pred_PAI_cnn", "mean"))
+            .copy()
+        )
+        m_hold_site = regression_metrics(holdout_site["truth_PAI"].to_numpy(), holdout_site["pred_PAI_cnn"].to_numpy())
+        metric_rows.append(
+            {"cv": "Holdout", "fold": "ENS", "level": "case_mean", "target": "truth_PAI", "pred": "cnn", **m_hold_site}
+        )
+
+        m_hold_img = regression_metrics(
+            holdout_df_out["truth_PAI"].to_numpy(),
+            holdout_df_out["pred_PAI_cnn"].to_numpy(),
+        )
+        metric_rows.append(
+            {"cv": "Holdout", "fold": "ENS", "level": "image", "target": "truth_PAI", "pred": "cnn", **m_hold_img}
+        )
+
     metrics_df = pd.DataFrame(metric_rows)
     metrics_df.to_csv(args.out_metrics, index=False, float_format="%.4f")
 
+    per_image_df = pd.DataFrame(per_image_rows)
     per_image_df.to_csv(args.out_per_image, index=False, float_format="%.4f")
+    # Per-site output for the CV (OOF) predictions only (train split)
     site_oof.to_csv(args.out_per_site, index=False, float_format="%.4f")
+
+    # Save a final model trained on all non-holdout data (optional)
+    if bool(args.save_models) and bool(args.save_final_model):
+        run_dir = _default_run_dir(Path(args.out_metrics))
+        models_dir = Path(args.models_dir) if args.models_dir is not None else (run_dir / "models")
+
+        final_train_df = df[df["split"].astype(str) == "train"].copy()
+        final_ds = HemiImageDataset(final_train_df, image_root=REPO_ROOT, transform=train_tfm)
+        final_loader = DataLoader(
+            final_ds,
+            batch_size=cfg.batch_size,
+            shuffle=True,
+            num_workers=cfg.num_workers,
+            pin_memory=(device.type == "cuda"),
+            collate_fn=collate_keep_meta,
+        )
+
+        final_model = build_model(cfg.backbone, cfg.freeze_backbone, cfg.nonnegative_head).to(device)
+        final_opt = torch.optim.AdamW(
+            [p for p in final_model.parameters() if p.requires_grad],
+            lr=cfg.lr,
+            weight_decay=cfg.weight_decay,
+        )
+        print(f"\nTraining final model on all train data: n={len(final_train_df)}")
+        for epoch in range(cfg.epochs):
+            loss = train_one_epoch(final_model, final_loader, final_opt, device)
+            print(f"  final epoch {epoch+1}/{cfg.epochs}  train_mse={loss:.4f}")
+
+        final_ckpt = models_dir / "pai_model_final_train.pth"
+        _save_checkpoint(
+            final_ckpt,
+            state_dict=_copy_state_dict_to_cpu(final_model),
+            backbone=cfg.backbone,
+            image_size=cfg.image_size,
+            nonnegative_head=cfg.nonnegative_head,
+            pred_min=pred_min,
+            seed=int(args.seed),
+            fold=None,
+            extra={"target": "truth_PAI", "trained_on": "train_split_only"},
+        )
+        print(f"Saved final model: {final_ckpt}")
 
     print("\nWrote metrics:", args.out_metrics)
     print("Wrote per-image predictions:", args.out_per_image)
     print("Wrote per-site predictions:", args.out_per_site)
     print("\nOOF (case_mean) metrics:", m_oof_site)
+
+    # Update latest_run pointer for convenience
+    run_id = str(args.run_id).strip()
+    if run_id:
+        progress_path_out: Path | None = None
+        if not bool(args.no_progress_csv) and args.progress_csv:
+            progress_path_out = Path(args.progress_csv)
+        models_dir = Path(args.models_dir) if args.models_dir is not None else (_default_run_dir(Path(args.out_metrics)) / "models")
+        _write_latest_run_baseline(
+            HERE / "latest_run.txt",
+            run_id=run_id,
+            out_metrics=Path(args.out_metrics),
+            out_per_image=Path(args.out_per_image),
+            out_per_site=Path(args.out_per_site),
+            progress_csv=progress_path_out,
+            models_dir=models_dir,
+        )
     return 0
 
 

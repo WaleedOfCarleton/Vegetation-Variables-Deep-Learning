@@ -8,7 +8,19 @@ import pandas as pd
 
 
 HERE = Path(__file__).resolve().parent
-REPO_ROOT = HERE.parent
+
+
+def _find_repo_root(start: Path) -> Path:
+    start = start.resolve()
+    for p in [start] + list(start.parents):
+        if (p / "Simulations").exists() and (p / "shared").exists() and (p / "ml").exists():
+            return p
+        if (p / ".git").exists():
+            return p
+    return start
+
+
+REPO_ROOT = _find_repo_root(HERE)
 TRUTH_XLSX = REPO_ROOT / "Inputs Cases LAI.xlsx"
 HEMIPY_CSV = REPO_ROOT / "Simulations" / "simulations_output.csv"
 OUT_CSV = HERE / "truth_joined_to_hemipy.csv"

@@ -21,6 +21,8 @@ Thumbs.db
 
 # Local truth/reference file (provided externally)
 /Inputs Cases LAI.xlsx
+~$*.xlsx
+~$*.xls
 
 # Large datasets / generated artifacts
 # Simulation imagery dataset is ~GBs; keep scripts + small CSVs, ignore the image folders.
@@ -49,15 +51,17 @@ runs/
 lightning_logs/
 
 # CNN baseline generated outputs
-/cnn_baseline/archive/
-/cnn_baseline/cnn_training_progress*.csv
-/cnn_baseline/run_*.log
+/ml/cnn_baseline/archive/
+/ml/cnn_baseline/working/
+/ml/cnn_baseline/cnn_training_progress*.csv
+/ml/cnn_baseline/run_*.log
 
 # CNN hinge generated outputs
-/cnn_hinge/archive/
-/cnn_hinge/*.csv
-/cnn_hinge/*.png
-/cnn_hinge/logs/
+/ml/cnn_hinge/archive/
+/ml/cnn_hinge/working/
+/ml/cnn_hinge/*.csv
+/ml/cnn_hinge/*.png
+/ml/cnn_hinge/logs/
 
 # If you don't want to version generated CSV outputs, uncomment:
 # *.csv

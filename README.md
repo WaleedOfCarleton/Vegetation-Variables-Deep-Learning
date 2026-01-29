@@ -1,9 +1,14 @@
 # HemiPy fork — Simulation + ML workflows
 
 This repository is based on the original **HemiPy** project by **Luke A. Brown**.
-The core `hemipy` package (canopy variable estimation from hemispherical photographs) is the original library; this fork focuses on running HemiPy on a simulated image dataset, validating outputs against provided “truth” values, and building ML baselines (including a CNN).
+This fork now separates:
 
-For the original upstream project documentation, see [OldREADME.md](OldREADME.md).
+- `hemipy_core/`: the original HemiPy estimator code
+- `ml/`: deep learning + ML baselines
+- `shared/`: shared data prep (truth joins, dataset index, evaluation)
+- `Simulations/`: simulation dataset (used by both)
+
+For the original upstream project documentation, see [hemipy_core/OldREADME.md](hemipy_core/OldREADME.md).
 
 ## Project owner / timeline
 
@@ -33,7 +38,7 @@ Outputs produced:
 
 To validate the HemiPy predictions against the provided reference (“true”) values, I added a join step:
 
-- [truth_join/join_truth_to_hemipy.py](truth_join/join_truth_to_hemipy.py)
+- [shared/truth_join/join_truth_to_hemipy.py](shared/truth_join/join_truth_to_hemipy.py)
 
 Inputs:
 
@@ -42,7 +47,7 @@ Inputs:
 
 Output:
 
-- [truth_join/truth_joined_to_hemipy.csv](truth_join/truth_joined_to_hemipy.csv)
+- [shared/truth_join/truth_joined_to_hemipy.csv](shared/truth_join/truth_joined_to_hemipy.csv)
 
 This produces a single table containing both:
 
@@ -53,22 +58,22 @@ This produces a single table containing both:
 
 To quantify agreement between predictions and truth, I added an evaluation step:
 
-- [estimations_eval/evaluate_estimations.py](estimations_eval/evaluate_estimations.py)
+- [shared/estimations_eval/evaluate_estimations.py](shared/estimations_eval/evaluate_estimations.py)
 
 Outputs:
 
-- [estimations_eval/estimation_metrics_summary.csv](estimations_eval/estimation_metrics_summary.csv)
-- [estimations_eval/estimation_residuals.csv](estimations_eval/estimation_residuals.csv)
+- [shared/estimations_eval/estimation_metrics_summary.csv](shared/estimations_eval/estimation_metrics_summary.csv)
+- [shared/estimations_eval/estimation_residuals.csv](shared/estimations_eval/estimation_residuals.csv)
 
 ### 4) Prepared an image-level ML dataset index
 
 To support ML experiments, I added a script that converts the simulation folder structure into an “image dataset index” CSV:
 
-- [dataset_index/build_image_dataset_index.py](dataset_index/build_image_dataset_index.py)
+- [shared/dataset_index/build_image_dataset_index.py](shared/dataset_index/build_image_dataset_index.py)
 
 Output:
 
-- [dataset_index/image_dataset_index.csv](dataset_index/image_dataset_index.csv)
+- [shared/dataset_index/image_dataset_index.csv](shared/dataset_index/image_dataset_index.csv)
 
 This index is used by the baseline models (feature baseline and CNN baseline) to locate images and their associated labels.
 
@@ -81,9 +86,9 @@ Notes:
 
 I am currently working toward training models to predict biophysical variables from the images.
 
-- Simple baseline features + metrics: [image_baseline/image_baseline_features.py](image_baseline/image_baseline_features.py)
-  - Output: [image_baseline/image_baseline_metrics.csv](image_baseline/image_baseline_metrics.csv)
-- CNN baseline training: [cnn_baseline/train_cnn_pai.py](cnn_baseline/train_cnn_pai.py)
+- Simple baseline features + metrics: [ml/image_baseline/image_baseline_features.py](ml/image_baseline/image_baseline_features.py)
+  - Output: [ml/image_baseline/image_baseline_metrics.csv](ml/image_baseline/image_baseline_metrics.csv)
+- CNN baseline training: [ml/cnn_baseline/train_cnn_pai.py](ml/cnn_baseline/train_cnn_pai.py)
   - Outputs are written as CSVs and plots; see **Where to find CNN results** below.
 
 Current status: the CNN baseline is actively developed and produces strong correlation with PAI (with optional post-hoc calibration to remove systematic bias).
@@ -112,13 +117,13 @@ They are intentionally kept under version control during active development so r
 
 ## Where to find CNN results
 
-The CNN baseline produces multiple output files (progress, metrics, per-image predictions, per-site/case predictions, and plots). To keep the root [cnn_baseline/](cnn_baseline/) folder clean, runs are archived under:
+The CNN baseline produces multiple output files (progress, metrics, per-image predictions, per-site/case predictions, and plots). Runs are stored under:
 
-- [cnn_baseline/archive/](cnn_baseline/archive/)
+- [ml/cnn_baseline/archive/](ml/cnn_baseline/archive/)
 
 The most recent run paths are tracked in:
 
-- [cnn_baseline/latest_run.txt](cnn_baseline/latest_run.txt)
+- [ml/cnn_baseline/latest_run.txt](ml/cnn_baseline/latest_run.txt)
 
 Training progress is written to a CSV (intended for live monitoring). Runs are disambiguated by a `run_id` column so multiple runs can share a single progress file.
 
@@ -126,7 +131,7 @@ Training progress is written to a CSV (intended for live monitoring). Runs are d
 
 We support post-hoc linear calibration to reduce bias:
 
-- Script: [cnn_baseline/calibrate_cnn_outputs.py](cnn_baseline/calibrate_cnn_outputs.py)
+- Script: [ml/cnn_baseline/calibrate_cnn_outputs.py](ml/cnn_baseline/calibrate_cnn_outputs.py)
 
 Calibration options:
 
@@ -135,7 +140,7 @@ Calibration options:
 
 Plots are generated via:
 
-- [cnn_baseline/visualize_cnn_results.py](cnn_baseline/visualize_cnn_results.py)
+- [ml/cnn_baseline/visualize_cnn_results.py](ml/cnn_baseline/visualize_cnn_results.py)
 
 ## Hinge-region PAIe + clumping (cnn_hinge)
 
@@ -153,17 +158,23 @@ Build (or rebuild) the index:
 
 ```bash
 python dataset_index/build_image_dataset_index.py --out dataset_index/image_dataset_index.csv
+
+Becomes:
+
+```bash
+python shared/dataset_index/build_image_dataset_index.py --out shared/dataset_index/image_dataset_index.csv
+```
 ```
 
 ### 2) Train a hinge PAIe CNN
 
 Training script:
 
-- [cnn_hinge/train_cnn_paie_hinge.py](cnn_hinge/train_cnn_paie_hinge.py)
+- [ml/cnn_hinge/train_cnn_paie_hinge.py](ml/cnn_hinge/train_cnn_paie_hinge.py)
 
 It produces metrics/per-image/per-site CSVs and writes a live-updated progress CSV (by default):
 
-- `cnn_hinge/cnn_hinge_training_progress.csv`
+- `ml/cnn_hinge/cnn_hinge_training_progress.csv`
 
 Progress CSV notes:
 
@@ -172,14 +183,14 @@ Progress CSV notes:
 
 Archived runs:
 
-- Hinge CNN runs are archived under [cnn_hinge/archive/](cnn_hinge/archive/) (raw outputs, derived clumping outputs, plots, and a snapshot of logs/progress).
-- The most recent archived run id is stored in [cnn_hinge/latest_run.txt](cnn_hinge/latest_run.txt).
+- Hinge CNN runs are archived under [ml/cnn_hinge/archive/](ml/cnn_hinge/archive/) (raw outputs, derived clumping outputs, plots, and a snapshot of logs/progress).
+- The most recent archived run id is stored in [ml/cnn_hinge/latest_run.txt](ml/cnn_hinge/latest_run.txt).
 
 Example (ERECT + PLANO only):
 
 ```bash
-python cnn_hinge/train_cnn_paie_hinge.py \
-  --index dataset_index/image_dataset_index.csv \
+python ml/cnn_hinge/train_cnn_paie_hinge.py \
+  --index shared/dataset_index/image_dataset_index.csv \
   --orientations ERECT PLANO \
   --epochs 25 --early-stop 6 --aug --aug-hflip --aug-color-jitter 0.1 \
   --nonnegative-head \
@@ -189,43 +200,43 @@ python cnn_hinge/train_cnn_paie_hinge.py \
 Batch-level progress logging is optional and **off by default** (to keep the CSV readable). If you want it:
 
 ```bash
-python cnn_hinge/train_cnn_paie_hinge.py --log-batches ...
+python ml/cnn_hinge/train_cnn_paie_hinge.py --log-batches ...
 ```
 
 ### 3) Monitor training progress
 
 To summarize the progress CSV (latest + per-fold latest/best), use:
 
-- [cnn_hinge/summarize_progress.py](cnn_hinge/summarize_progress.py)
+- [ml/cnn_hinge/summarize_progress.py](ml/cnn_hinge/summarize_progress.py)
 
 ```bash
-python cnn_hinge/summarize_progress.py
+python ml/cnn_hinge/summarize_progress.py
 ```
 
-By default, the summarizer will try to use the run id from [cnn_hinge/latest_run.txt](cnn_hinge/latest_run.txt).
+By default, the summarizer will try to use the run id from [ml/cnn_hinge/latest_run.txt](ml/cnn_hinge/latest_run.txt).
 
 If multiple runs share the same progress CSV, pass `--run-id` explicitly:
 
 ```bash
-python cnn_hinge/summarize_progress.py --run-id 20260127_paie_hinge_ep25_aug_es
+python ml/cnn_hinge/summarize_progress.py --run-id 20260127_paie_hinge_ep25_aug_es
 ```
 
 ### 4) Compute clumping-hinge from PAI (baseline) + PAIe-hinge (hinge CNN)
 
 Clumping-hinge is computed by combining per-site predictions:
 
-- baseline PAI per-site predictions (from `cnn_baseline/`)
-- hinge PAIe per-site predictions (from `cnn_hinge/`)
+- baseline PAI per-site predictions (from `ml/cnn_baseline/`)
+- hinge PAIe per-site predictions (from `ml/cnn_hinge/`)
 
 Script:
 
-- [cnn_hinge/compute_clumping_hinge.py](cnn_hinge/compute_clumping_hinge.py)
+- [ml/cnn_hinge/compute_clumping_hinge.py](ml/cnn_hinge/compute_clumping_hinge.py)
 
 ### 5) Visualize hinge/clumping results
 
 Plots are generated via:
 
-- [cnn_hinge/visualize_cnn_hinge_results.py](cnn_hinge/visualize_cnn_hinge_results.py)
+- [ml/cnn_hinge/visualize_cnn_hinge_results.py](ml/cnn_hinge/visualize_cnn_hinge_results.py)
 
 ## Credit / citation
 

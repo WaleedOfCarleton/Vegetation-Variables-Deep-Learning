@@ -1,0 +1,9 @@
+runId=20260128_pai_holdout10_smoke
+
+[raw]
+progress=C:\Users\wabuosbe\Documents\Hemi\hemipy-main\cnn_baseline\working\20260128_pai_holdout10_smoke\raw\cnn_training_progress.csv
+metrics=C:\Users\wabuosbe\Documents\Hemi\hemipy-main\cnn_baseline\working\20260128_pai_holdout10_smoke\raw\cnn_baseline_metrics.csv
+per_image=C:\Users\wabuosbe\Documents\Hemi\hemipy-main\cnn_baseline\working\20260128_pai_holdout10_smoke\raw\cnn_per_image_predictions.csv
+per_site=C:\Users\wabuosbe\Documents\Hemi\hemipy-main\cnn_baseline\working\20260128_pai_holdout10_smoke\raw\cnn_per_site_predictions.csv
+plots_dir=C:\Users\wabuosbe\Documents\Hemi\hemipy-main\cnn_baseline\working\20260128_pai_holdout10_smoke\raw
+models_dir=C:\Users\wabuosbe\Documents\Hemi\hemipy-main\cnn_baseline\working\20260128_pai_holdout10_smoke\models
