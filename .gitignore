@@ -50,18 +50,5 @@ Thumbs.db
 runs/
 lightning_logs/
 
-# CNN baseline generated outputs
-/ml/cnn_baseline/archive/
-/ml/cnn_baseline/working/
-/ml/cnn_baseline/cnn_training_progress*.csv
-/ml/cnn_baseline/run_*.log
-
-# CNN hinge generated outputs
-/ml/cnn_hinge/archive/
-/ml/cnn_hinge/working/
-/ml/cnn_hinge/*.csv
-/ml/cnn_hinge/*.png
-/ml/cnn_hinge/logs/
-
 # If you don't want to version generated CSV outputs, uncomment:
 # *.csv

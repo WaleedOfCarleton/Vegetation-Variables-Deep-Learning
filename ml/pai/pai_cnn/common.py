@@ -16,11 +16,9 @@ from torch.utils.data.dataloader import default_collate
 
 try:
     from torchvision import transforms
-    from torchvision.models import resnet18, ResNet18_Weights
+    from torchvision.models import ResNet18_Weights, resnet18
 except Exception as exc:  # pragma: no cover
-    raise ImportError(
-        "torchvision is required for the CNN scripts. Install torch + torchvision."
-    ) from exc
+    raise ImportError("torchvision is required for the CNN scripts. Install torch + torchvision.") from exc
 
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
@@ -36,11 +34,19 @@ class IndexRow:
     truth_value: float
 
 
-def get_repo_root_from_ml_file(ml_file: str | Path) -> Path:
-    """Given a file inside ml/, return the repo root."""
+def get_repo_root_from_any_ml_file(ml_file: str | Path) -> Path:
+    """Find the repo root starting from any file under ml/.
+
+    This is intentionally robust to nested folders like ml/pai/... .
+    """
+
     p = Path(ml_file).resolve()
-    # .../repo/ml/<this file>
-    return p.parents[1]
+    for parent in [p] + list(p.parents):
+        if (parent / "Simulations").exists() and (parent / "shared").exists() and (parent / "ml").exists():
+            return parent
+        if (parent / ".git").exists():
+            return parent
+    return p.parents[-1]
 
 
 def read_index_csv(
@@ -57,10 +63,7 @@ def read_index_csv(
             reader.fieldnames or []
         )
         if missing_cols:
-            raise ValueError(
-                f"Index CSV is missing columns: {sorted(missing_cols)}. "
-                f"Found: {reader.fieldnames}"
-            )
+            raise ValueError(f"Index CSV is missing columns: {sorted(missing_cols)}. Found: {reader.fieldnames}")
 
         for r in reader:
             if orientation is not None and r["orientation"] != orientation:
@@ -74,7 +77,6 @@ def read_index_csv(
             try:
                 y = float(raw)
             except ValueError:
-                # Be forgiving of odd formats (e.g. "1.66+/-0.06")
                 token = raw.split("+")[0].strip()
                 y = float(token)
 
@@ -89,17 +91,11 @@ def read_index_csv(
             )
 
     if not rows:
-        raise ValueError(
-            "No usable rows found after filtering; check orientation/simulation_set/target_col."
-        )
+        raise ValueError("No usable rows found after filtering; check orientation/simulation_set/target_col.")
     return rows
 
 
-def split_cases(
-    rows: list[IndexRow],
-    val_fraction: float,
-    seed: int,
-) -> tuple[list[IndexRow], list[IndexRow]]:
+def split_cases(rows: list[IndexRow], val_fraction: float, seed: int) -> tuple[list[IndexRow], list[IndexRow]]:
     if not (0.0 < val_fraction < 1.0):
         raise ValueError("val_fraction must be between 0 and 1")
 
@@ -115,23 +111,7 @@ def split_cases(
     return train_rows, val_rows
 
 
-def split_cases_kfold(
-    rows: list[IndexRow],
-    k: int,
-    fold: int,
-    seed: int,
-) -> tuple[list[IndexRow], list[IndexRow]]:
-    """Case-wise k-fold split.
-
-    Splits by case (not by image) to avoid leakage.
-
-    Args:
-        rows: labeled dataset rows
-        k: number of folds (e.g. 5)
-        fold: which fold index to use as validation (0..k-1)
-        seed: shuffle seed for deterministic folds
-    """
-
+def split_cases_kfold(rows: list[IndexRow], k: int, fold: int, seed: int) -> tuple[list[IndexRow], list[IndexRow]]:
     if k < 2:
         raise ValueError("k must be >= 2")
     if not (0 <= fold < k):
@@ -141,7 +121,6 @@ def split_cases_kfold(
     rng = random.Random(seed)
     rng.shuffle(cases)
 
-    # Round-robin assignment to keep folds balanced.
     folds: list[list[str]] = [[] for _ in range(k)]
     for i, c in enumerate(cases):
         folds[i % k].append(c)
@@ -175,12 +154,7 @@ def build_transforms(img_size: int, train: bool) -> transforms.Compose:
 
 
 class PaiIndexDataset(Dataset):
-    def __init__(
-        self,
-        rows: list[IndexRow],
-        repo_root: Path,
-        transform: transforms.Compose,
-    ) -> None:
+    def __init__(self, rows: list[IndexRow], repo_root: Path, transform: transforms.Compose) -> None:
         self._rows = rows
         self._repo_root = repo_root
         self._transform = transform
@@ -198,11 +172,6 @@ class PaiIndexDataset(Dataset):
 
 
 def collate_keep_meta(batch):
-    """Collate (x, y) tensors but keep IndexRow metadata as a list.
-
-    PyTorch's default collate cannot handle arbitrary dataclasses.
-    """
-
     xs, ys, metas = zip(*batch)
     return default_collate(xs), default_collate(ys), list(metas)
 
@@ -211,7 +180,7 @@ def build_model(pretrained: bool) -> nn.Module:
     if pretrained:
         try:
             weights = ResNet18_Weights.DEFAULT
-        except Exception:  # older torchvision
+        except Exception:
             weights = None
     else:
         weights = None
@@ -223,11 +192,7 @@ def build_model(pretrained: bool) -> nn.Module:
 
 
 @torch.no_grad()
-def evaluate(
-    model: nn.Module,
-    loader: Iterable,
-    device: torch.device,
-) -> dict:
+def evaluate(model: nn.Module, loader: Iterable, device: torch.device) -> dict:
     model.eval()
 
     sum_abs = 0.0

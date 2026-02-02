@@ -8,7 +8,7 @@ from pathlib import Path
 import torch
 from torch.utils.data import DataLoader
 
-# Allow `from pai_cnn...` when invoked as `python ml/predict_all_cases_pai.py`
+# Allow `from pai_cnn...` when invoked as `python ml/pai/predict_all_cases_pai.py`
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -18,15 +18,13 @@ from pai_cnn.common import (  # noqa: E402
     build_model,
     build_transforms,
     collate_keep_meta,
-    get_repo_root_from_ml_file,
+    get_repo_root_from_any_ml_file,
     read_index_csv,
 )
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(
-        description="Predict PAI for all cases in the dataset index using a trained checkpoint."
-    )
+    p = argparse.ArgumentParser(description="Predict PAI for all cases in the dataset index using a trained checkpoint.")
     p.add_argument("--checkpoint", type=str, required=True, help="Path to model_best.pt or model_last.pt")
     p.add_argument(
         "--index-csv",
@@ -55,9 +53,11 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
 
-    repo_root = get_repo_root_from_ml_file(__file__)
+    repo_root = get_repo_root_from_any_ml_file(__file__)
     index_csv = (
-        Path(args.index_csv) if args.index_csv else (repo_root / "shared" / "dataset_index" / "image_dataset_index.csv")
+        Path(args.index_csv)
+        if args.index_csv
+        else (repo_root / "shared" / "dataset_index" / "image_dataset_index.csv")
     )
 
     ckpt_path = Path(args.checkpoint)
@@ -111,14 +111,7 @@ def main() -> int:
     with per_image_csv.open("w", newline="", encoding="utf-8") as f_img:
         writer = csv.DictWriter(
             f_img,
-            fieldnames=[
-                "case_norm",
-                "simulation_set",
-                "orientation",
-                "image_path",
-                "truth",
-                "pred",
-            ],
+            fieldnames=["case_norm", "simulation_set", "orientation", "image_path", "truth", "pred"],
         )
         writer.writeheader()
 
@@ -151,7 +144,6 @@ def main() -> int:
                 sq_err_sum += e * e
                 n_images += 1
 
-    # Write per-case means
     case_abs_sum = 0.0
     n_cases = 0
 
@@ -163,14 +155,7 @@ def main() -> int:
             mean_pred = per_case_sum[case] / per_case_n[case]
             truth = per_case_truth[case]
             ae = abs(mean_pred - truth)
-            writer.writerow(
-                {
-                    "case_norm": case,
-                    "truth": truth,
-                    "pred_mean": mean_pred,
-                    "abs_err": ae,
-                }
-            )
+            writer.writerow({"case_norm": case, "truth": truth, "pred_mean": mean_pred, "abs_err": ae})
             case_abs_sum += ae
             n_cases += 1
 

@@ -14,7 +14,7 @@ try:
 except Exception:  # pragma: no cover
     tqdm = None
 
-# Allow `from pai_cnn...` when invoked as `python ml/train_cnn_pai.py`
+# Allow `from pai_cnn...` when invoked as `python ml/pai/train_cnn_pai.py`
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -25,7 +25,7 @@ from pai_cnn.common import (  # noqa: E402
     build_transforms,
     collate_keep_meta,
     evaluate,
-    get_repo_root_from_ml_file,
+    get_repo_root_from_any_ml_file,
     read_index_csv,
     save_json,
     split_cases,
@@ -96,7 +96,7 @@ def main() -> int:
     args = parse_args()
     set_seed(args.seed)
 
-    repo_root = get_repo_root_from_ml_file(__file__)
+    repo_root = get_repo_root_from_any_ml_file(__file__)
     index_csv = (
         Path(args.index_csv)
         if args.index_csv

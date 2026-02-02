@@ -25,8 +25,8 @@ class FoldBest:
 
 
 def _repo_root_from_this_file() -> Path:
-    # .../repo/ml/run_kfold_train_cnn_pai.py
-    return Path(__file__).resolve().parents[1]
+    # .../repo/ml/pai/run_kfold_train_cnn_pai.py
+    return Path(__file__).resolve().parents[2]
 
 
 def _read_best_from_metrics(metrics_csv: Path, fold: int, run_dir: Path) -> FoldBest:
@@ -56,9 +56,7 @@ def _read_best_from_metrics(metrics_csv: Path, fold: int, run_dir: Path) -> Fold
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(
-        description="Run case-wise k-fold training for the PAI CNN and summarize fold metrics."
-    )
+    p = argparse.ArgumentParser(description="Run case-wise k-fold training for the PAI CNN and summarize fold metrics.")
 
     p.add_argument("--k", type=int, default=5, help="Number of folds (default: 5)")
     p.add_argument("--seed", type=int, default=42)
@@ -88,30 +86,23 @@ def parse_args() -> argparse.Namespace:
         help="Base output folder (default: ml/runs/pai_cnn_kfold/<timestamp>)",
     )
 
-    p.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Print commands without executing training.",
-    )
-
+    p.add_argument("--dry-run", action="store_true", help="Print commands without executing training.")
     return p.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-
     if args.k < 2:
         raise ValueError("--k must be >= 2")
 
     repo_root = _repo_root_from_this_file()
-    train_script = repo_root / "ml" / "train_cnn_pai.py"
+    train_script = repo_root / "ml" / "pai" / "train_cnn_pai.py"
 
     ts = time.strftime("%Y%m%d-%H%M%S")
     out_dir = Path(args.out_dir) if args.out_dir else (repo_root / "ml" / "runs" / "pai_cnn_kfold" / ts)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     python_exe = sys.executable
-
     fold_bests: list[FoldBest] = []
 
     for fold in range(args.k):
@@ -164,9 +155,7 @@ def main() -> int:
 
         if not args.dry_run:
             subprocess.run(cmd, check=True)
-
-            metrics_csv = fold_dir / "metrics.csv"
-            best = _read_best_from_metrics(metrics_csv, fold=fold, run_dir=fold_dir)
+            best = _read_best_from_metrics(fold_dir / "metrics.csv", fold=fold, run_dir=fold_dir)
             fold_bests.append(best)
 
     summary_csv = out_dir / "kfold_summary.csv"

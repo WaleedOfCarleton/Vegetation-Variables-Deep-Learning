@@ -11,8 +11,6 @@ REPO_ROOT = Path(__file__).resolve().parent
 STEPS = {
     "truth_join": REPO_ROOT / "shared" / "truth_join" / "join_truth_to_hemipy.py",
     "dataset_index": REPO_ROOT / "shared" / "dataset_index" / "build_image_dataset_index.py",
-    "image_baseline": REPO_ROOT / "ml" / "image_baseline" / "image_baseline_features.py",
-    "cnn_baseline": REPO_ROOT / "ml" / "cnn_baseline" / "train_cnn_pai.py",
     "estimations_eval": REPO_ROOT / "shared" / "estimations_eval" / "evaluate_estimations.py",
 }
 
@@ -30,7 +28,6 @@ def main() -> int:
     p = argparse.ArgumentParser(
         description=(
             "Run the HemiPy helper scripts in order using the reorganized folder layout.\n"
-            "Tip: skip 'cnn_baseline' if you don't have PyTorch installed."
         )
     )
     p.add_argument(
@@ -45,20 +42,16 @@ def main() -> int:
         default=[
             "truth_join",
             "dataset_index",
-            "image_baseline",
             "estimations_eval",
         ],
         help=(
             "Steps to run in order. Choices: "
             + ", ".join(STEPS.keys())
-            + ". Default excludes cnn_baseline."
+            + "."
         ),
     )
-    p.add_argument(
-        "--include-cnn",
-        action="store_true",
-        help="Convenience flag to append cnn_baseline before estimations_eval.",
-    )
+    # NOTE: ML/CNN workflows were removed (ml/ deleted). If reintroduced,
+    # add the step back to STEPS and re-add an include flag.
     p.add_argument(
         "--dry-run",
         action="store_true",
@@ -67,12 +60,6 @@ def main() -> int:
     args = p.parse_args()
 
     steps = list(args.steps)
-    if args.include_cnn and "cnn_baseline" not in steps:
-        if "estimations_eval" in steps:
-            i = steps.index("estimations_eval")
-            steps.insert(i, "cnn_baseline")
-        else:
-            steps.append("cnn_baseline")
 
     unknown = [s for s in steps if s not in STEPS]
     if unknown:
