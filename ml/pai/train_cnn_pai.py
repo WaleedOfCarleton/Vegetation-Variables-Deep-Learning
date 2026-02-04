@@ -71,6 +71,16 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--cpu", action="store_true")
     p.add_argument("--amp", action="store_true", help="Use mixed precision (CUDA only)")
     p.add_argument("--patience", type=int, default=7, help="Early stopping patience (epochs)")
+    p.add_argument(
+        "--best-metric",
+        type=str,
+        default="val_loss",
+        choices=["val_loss", "val_mae_case", "val_mae_image", "val_rmse_image"],
+        help=(
+            "Which validation metric to minimize for saving model_best.pt and early stopping. "
+            "Default: val_loss."
+        ),
+    )
 
     p.add_argument(
         "--run-dir",
@@ -176,6 +186,7 @@ def main() -> int:
             "pretrained": args.pretrained,
             "device": device.type,
             "amp": use_amp,
+            "best_metric": args.best_metric,
         },
     )
 
@@ -203,7 +214,11 @@ def main() -> int:
         )
         writer.writeheader()
 
-        best_val = float("inf")
+        best_score = float("inf")
+        best_by: dict[str, float] = {
+            "val_loss": float("inf"),
+            "val_mae_case": float("inf"),
+        }
         bad_epochs = 0
 
         for epoch in range(1, args.epochs + 1):
@@ -259,6 +274,14 @@ def main() -> int:
             eval_metrics = evaluate(model, val_loader, device=device)
             lr = optimizer.param_groups[0]["lr"]
 
+            metric_map = {
+                "val_loss": float(val_loss),
+                "val_mae_case": float(eval_metrics["mae_case"]),
+                "val_mae_image": float(eval_metrics["mae_image"]),
+                "val_rmse_image": float(eval_metrics["rmse_image"]),
+            }
+            score = metric_map[str(args.best_metric)]
+
             print(
                 " | ".join(
                     [
@@ -290,18 +313,32 @@ def main() -> int:
                 "model_state": model.state_dict(),
                 "epoch": epoch,
                 "val_loss": val_loss,
+                "val_mae_case": float(eval_metrics["mae_case"]),
+                "val_mae_image": float(eval_metrics["mae_image"]),
+                "val_rmse_image": float(eval_metrics["rmse_image"]),
+                "best_metric": str(args.best_metric),
+                "best_metric_value": float(score),
                 "config": {
                     "img_size": args.img_size,
                     "target_col": args.target_col,
                     "orientation": args.orientation,
                     "simulation_set": args.simulation_set,
                     "pretrained": args.pretrained,
+                    "best_metric": args.best_metric,
                 },
             }
             torch.save(ckpt, run_dir / "model_last.pt")
 
-            if val_loss < best_val:
-                best_val = val_loss
+            # Always keep these two around for analysis/comparison.
+            if float(val_loss) < best_by["val_loss"]:
+                best_by["val_loss"] = float(val_loss)
+                torch.save(ckpt, run_dir / "model_best_val_loss.pt")
+            if float(eval_metrics["mae_case"]) < best_by["val_mae_case"]:
+                best_by["val_mae_case"] = float(eval_metrics["mae_case"])
+                torch.save(ckpt, run_dir / "model_best_val_mae_case.pt")
+
+            if score < best_score:
+                best_score = score
                 bad_epochs = 0
                 torch.save(ckpt, run_dir / "model_best.pt")
             else:

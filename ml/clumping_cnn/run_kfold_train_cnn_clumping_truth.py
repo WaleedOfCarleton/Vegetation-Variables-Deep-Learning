@@ -29,7 +29,7 @@ def _repo_root_from_this_file() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
-def _read_best_from_metrics(metrics_csv: Path, fold: int, run_dir: Path) -> FoldBest:
+def _read_best_from_metrics(metrics_csv: Path, fold: int, run_dir: Path, *, best_metric: str) -> FoldBest:
     with metrics_csv.open("r", newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         rows = list(reader)
@@ -37,7 +37,12 @@ def _read_best_from_metrics(metrics_csv: Path, fold: int, run_dir: Path) -> Fold
     if not rows:
         raise RuntimeError(f"No rows in metrics.csv: {metrics_csv}")
 
-    best = min(rows, key=lambda r: float(r["val_loss"]))
+    if best_metric not in rows[0]:
+        raise RuntimeError(
+            f"best_metric '{best_metric}' not found in metrics.csv columns: {sorted(rows[0].keys())}"
+        )
+
+    best = min(rows, key=lambda r: float(r[best_metric]))
 
     return FoldBest(
         fold=fold,
@@ -78,6 +83,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--cpu", action="store_true")
     p.add_argument("--amp", action="store_true")
     p.add_argument("--patience", type=int, default=7)
+    p.add_argument(
+        "--best-metric",
+        type=str,
+        default="val_loss",
+        choices=["val_loss", "val_mae_case", "val_mae_image", "val_rmse_image"],
+        help="Which validation metric to minimize when selecting the best epoch per fold (default: val_loss).",
+    )
 
     p.add_argument(
         "--out-dir",
@@ -137,6 +149,8 @@ def main() -> int:
             str(args.num_workers),
             "--patience",
             str(args.patience),
+            "--best-metric",
+            str(args.best_metric),
         ]
 
         if args.index_csv:
@@ -157,7 +171,9 @@ def main() -> int:
 
         if not args.dry_run:
             subprocess.run(cmd, check=True)
-            best = _read_best_from_metrics(fold_dir / "metrics.csv", fold=fold, run_dir=fold_dir)
+            best = _read_best_from_metrics(
+                fold_dir / "metrics.csv", fold=fold, run_dir=fold_dir, best_metric=str(args.best_metric)
+            )
             fold_bests.append(best)
 
     summary_csv = out_dir / "kfold_summary.csv"
@@ -171,6 +187,7 @@ def main() -> int:
         agg = {
             "k": args.k,
             "seed": args.seed,
+            "best_metric": str(args.best_metric),
             "val_mae_case_mean": mean([b.val_mae_case for b in fold_bests]),
             "val_mae_case_std": pstdev([b.val_mae_case for b in fold_bests]),
             "val_rmse_image_mean": mean([b.val_rmse_image for b in fold_bests]),
@@ -180,7 +197,7 @@ def main() -> int:
         }
         (out_dir / "kfold_aggregate.json").write_text(json.dumps(agg, indent=2), encoding="utf-8")
 
-        print("\n=== Aggregate (best val_loss per fold) ===")
+        print(f"\n=== Aggregate (best {args.best_metric} per fold) ===")
         print(f"val_mae_case: {agg['val_mae_case_mean']:.4f} ± {agg['val_mae_case_std']:.4f}")
         print(f"val_rmse_image: {agg['val_rmse_image_mean']:.4f} ± {agg['val_rmse_image_std']:.4f}")
         print(f"Wrote: {summary_csv}")
