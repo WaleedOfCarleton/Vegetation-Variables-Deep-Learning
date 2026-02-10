@@ -78,6 +78,25 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--lr", type=float, default=3e-4)
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--num-workers", type=int, default=2)
+    p.add_argument(
+        "--rnd-train-weight",
+        type=float,
+        default=1.0,
+        help="Oversample training images with simulation_set == 'RND' by this weight (default: 1.0).",
+    )
+
+    p.add_argument(
+        "--case-range-min",
+        type=int,
+        default=None,
+        help="Optional case-number range min for stratified fold assignment (e.g., 1 for Case 001).",
+    )
+    p.add_argument(
+        "--case-range-max",
+        type=int,
+        default=None,
+        help="Optional case-number range max for stratified fold assignment (e.g., 10 for Case 010).",
+    )
 
     p.add_argument("--pretrained", action="store_true")
     p.add_argument("--cpu", action="store_true")
@@ -151,7 +170,14 @@ def main() -> int:
             str(args.patience),
             "--best-metric",
             str(args.best_metric),
+            "--rnd-train-weight",
+            str(args.rnd_train_weight),
         ]
+
+        if (args.case_range_min is None) ^ (args.case_range_max is None):
+            raise ValueError("Provide both --case-range-min and --case-range-max (or neither).")
+        if args.case_range_min is not None and args.case_range_max is not None:
+            cmd += ["--case-range-min", str(args.case_range_min), "--case-range-max", str(args.case_range_max)]
 
         if args.index_csv:
             cmd += ["--index-csv", str(args.index_csv)]

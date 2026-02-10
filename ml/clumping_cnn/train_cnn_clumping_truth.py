@@ -8,6 +8,7 @@ from pathlib import Path
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
+from torch.utils.data import WeightedRandomSampler
 
 try:
     from tqdm import tqdm  # type: ignore
@@ -29,6 +30,7 @@ from pai_cnn.common import (  # noqa: E402
     read_index_csv,
     save_json,
     split_cases,
+    split_cases_stratified,
     split_cases_kfold,
 )
 
@@ -45,8 +47,38 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--lr", type=float, default=3e-4)
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--val-fraction", type=float, default=0.2)
+    p.add_argument(
+        "--case-range-min",
+        type=int,
+        default=None,
+        help="Optional case-number range minimum (e.g., 1 for Case 001). Used for stratified splitting.",
+    )
+    p.add_argument(
+        "--case-range-max",
+        type=int,
+        default=None,
+        help="Optional case-number range maximum (e.g., 10 for Case 010). Used for stratified splitting.",
+    )
+    p.add_argument(
+        "--val-min-cases-in-range",
+        type=int,
+        default=0,
+        help=(
+            "When not using --kfold, ensure validation includes at least this many cases from the given "
+            "--case-range-min/--case-range-max. Default: 0 (no constraint)."
+        ),
+    )
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--num-workers", type=int, default=2)
+    p.add_argument(
+        "--rnd-train-weight",
+        type=float,
+        default=1.0,
+        help=(
+            "Oversample training images with simulation_set == 'RND' by this multiplicative weight. "
+            "1.0 disables weighting. Example: 5.0 makes RND images ~5x more likely to be sampled."
+        ),
+    )
 
     p.add_argument("--kfold", type=int, default=None)
     p.add_argument("--fold", type=int, default=0)
@@ -86,6 +118,12 @@ def main() -> int:
     args = parse_args()
     set_seed(args.seed)
 
+    case_range = None
+    if (args.case_range_min is None) ^ (args.case_range_max is None):
+        raise ValueError("Provide both --case-range-min and --case-range-max (or neither).")
+    if args.case_range_min is not None and args.case_range_max is not None:
+        case_range = (int(args.case_range_min), int(args.case_range_max))
+
     repo_root = get_repo_root_from_any_ml_file(__file__)
     index_csv = (
         Path(args.index_csv)
@@ -101,9 +139,21 @@ def main() -> int:
     )
 
     if args.kfold is not None:
-        train_rows, val_rows = split_cases_kfold(rows, k=int(args.kfold), fold=int(args.fold), seed=args.seed)
+        train_rows, val_rows = split_cases_kfold(
+            rows,
+            k=int(args.kfold),
+            fold=int(args.fold),
+            seed=args.seed,
+            case_range=case_range,
+        )
     else:
-        train_rows, val_rows = split_cases(rows, val_fraction=args.val_fraction, seed=args.seed)
+        train_rows, val_rows = split_cases_stratified(
+            rows,
+            val_fraction=args.val_fraction,
+            seed=args.seed,
+            case_range=case_range,
+            min_val_cases_in_range=int(args.val_min_cases_in_range),
+        )
 
     train_tf = build_transforms(args.img_size, train=True)
     val_tf = build_transforms(args.img_size, train=False)
@@ -111,10 +161,24 @@ def main() -> int:
     train_ds = PaiIndexDataset(train_rows, repo_root=repo_root, transform=train_tf)
     val_ds = PaiIndexDataset(val_rows, repo_root=repo_root, transform=val_tf)
 
+    sampler = None
+    if float(args.rnd_train_weight) != 1.0:
+        if float(args.rnd_train_weight) < 1.0:
+            raise ValueError("--rnd-train-weight must be >= 1.0")
+
+        weights = [
+            float(args.rnd_train_weight) if (r.simulation_set or "") == "RND" else 1.0 for r in train_rows
+        ]
+        gen = torch.Generator()
+        gen.manual_seed(int(args.seed))
+        sampler = WeightedRandomSampler(weights=weights, num_samples=len(weights), replacement=True, generator=gen)
+        print(f"Using WeightedRandomSampler for training (RND weight={args.rnd_train_weight:g})")
+
     train_loader = DataLoader(
         train_ds,
         batch_size=args.batch_size,
-        shuffle=True,
+        shuffle=(sampler is None),
+        sampler=sampler,
         num_workers=args.num_workers,
         pin_memory=not args.cpu,
         collate_fn=collate_keep_meta,
@@ -170,6 +234,7 @@ def main() -> int:
             "device": device.type,
             "amp": use_amp,
             "best_metric": args.best_metric,
+            "rnd_train_weight": float(args.rnd_train_weight),
         },
     )
 

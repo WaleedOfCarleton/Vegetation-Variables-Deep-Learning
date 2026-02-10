@@ -126,6 +126,12 @@ def main() -> int:
         if fp.suffix.lower() not in IMG_EXTS:
             continue
 
+        try:
+            rel = fp.resolve().relative_to(sim_root)
+            simulation_set = rel.parts[0] if rel.parts else None
+        except Exception:
+            simulation_set = None
+
         orientation = _extract_orientation(fp)
         case_norm = _extract_case_norm(fp)
         plot = _extract_plot(fp)
@@ -137,7 +143,7 @@ def main() -> int:
             {
                 "image_path": fp.resolve().relative_to(REPO_ROOT).as_posix(),
                 "filename": fp.name,
-                "simulation_set": next((p for p in fp.parts if "DHP -" in p), None),
+                "simulation_set": simulation_set,
                 "orientation": orientation,
                 "case_norm": case_norm,
                 "plot": plot,

@@ -26,6 +26,7 @@ Thumbs.db
 
 # Large datasets / generated artifacts
 # Simulation imagery dataset is ~GBs; keep scripts + small CSVs, ignore the image folders.
+/Simulations/
 /Simulations/DHP - ERECT - 4000x4000/
 /Simulations/DHP - PLANO - 4000x4000/
 /Simulations/DHP - RND - 4000x4000/

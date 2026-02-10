@@ -4,6 +4,7 @@ import csv
 import json
 import math
 import random
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Optional
@@ -96,22 +97,110 @@ def read_index_csv(
 
 
 def split_cases(rows: list[IndexRow], val_fraction: float, seed: int) -> tuple[list[IndexRow], list[IndexRow]]:
+    return split_cases_stratified(
+        rows,
+        val_fraction=val_fraction,
+        seed=seed,
+        case_range=None,
+        min_val_cases_in_range=0,
+    )
+
+
+def _case_number(case_norm: str) -> int | None:
+    m = re.search(r"case\s*(\d+)", str(case_norm), flags=re.IGNORECASE)
+    if not m:
+        return None
+    try:
+        return int(m.group(1))
+    except Exception:
+        return None
+
+
+def split_cases_stratified(
+    rows: list[IndexRow],
+    val_fraction: float,
+    seed: int,
+    *,
+    case_range: tuple[int, int] | None,
+    min_val_cases_in_range: int = 0,
+) -> tuple[list[IndexRow], list[IndexRow]]:
+    """Case-wise train/val split with an optional constraint.
+
+    If case_range is provided (inclusive) and min_val_cases_in_range > 0,
+    the validation set will include at least that many cases from the range.
+    """
+
     if not (0.0 < val_fraction < 1.0):
         raise ValueError("val_fraction must be between 0 and 1")
+    if min_val_cases_in_range < 0:
+        raise ValueError("min_val_cases_in_range must be >= 0")
 
-    cases = sorted({r.case_norm for r in rows})
+    all_cases = sorted({r.case_norm for r in rows})
     rng = random.Random(seed)
-    rng.shuffle(cases)
 
-    n_val = max(1, int(round(len(cases) * val_fraction)))
-    val_cases = set(cases[:n_val])
+    n_val_total = max(1, int(round(len(all_cases) * val_fraction)))
+
+    if case_range is None or min_val_cases_in_range == 0:
+        cases = list(all_cases)
+        rng.shuffle(cases)
+        val_cases = set(cases[:n_val_total])
+        train_rows = [r for r in rows if r.case_norm not in val_cases]
+        val_rows = [r for r in rows if r.case_norm in val_cases]
+        return train_rows, val_rows
+
+    lo, hi = case_range
+    if lo > hi:
+        raise ValueError("case_range min must be <= max")
+
+    in_range: list[str] = []
+    out_range: list[str] = []
+    for c in all_cases:
+        n = _case_number(c)
+        if n is None:
+            out_range.append(c)
+        elif lo <= n <= hi:
+            in_range.append(c)
+        else:
+            out_range.append(c)
+
+    if min_val_cases_in_range > len(in_range):
+        raise ValueError(
+            f"Requested min_val_cases_in_range={min_val_cases_in_range} but only {len(in_range)} cases are in range {lo}-{hi}"
+        )
+
+    rng.shuffle(in_range)
+    rng.shuffle(out_range)
+
+    # Try to keep val containing both groups when possible.
+    n_val_in = min_val_cases_in_range
+    if out_range and n_val_total <= n_val_in:
+        n_val_in = max(0, n_val_total - 1)
+    n_val_in = min(n_val_in, len(in_range), n_val_total)
+
+    n_val_out = n_val_total - n_val_in
+    if n_val_out > len(out_range):
+        # Not enough out-of-range cases; fill the remainder from in-range.
+        n_val_out = len(out_range)
+        n_val_in = min(n_val_total - n_val_out, len(in_range))
+
+    val_cases = set(in_range[:n_val_in] + out_range[:n_val_out])
+    if not val_cases:
+        # Should be impossible due to n_val_total>=1, but keep it safe.
+        val_cases = {all_cases[0]}
 
     train_rows = [r for r in rows if r.case_norm not in val_cases]
     val_rows = [r for r in rows if r.case_norm in val_cases]
     return train_rows, val_rows
 
 
-def split_cases_kfold(rows: list[IndexRow], k: int, fold: int, seed: int) -> tuple[list[IndexRow], list[IndexRow]]:
+def split_cases_kfold(
+    rows: list[IndexRow],
+    k: int,
+    fold: int,
+    seed: int,
+    *,
+    case_range: tuple[int, int] | None = None,
+) -> tuple[list[IndexRow], list[IndexRow]]:
     if k < 2:
         raise ValueError("k must be >= 2")
     if not (0 <= fold < k):
@@ -119,11 +208,33 @@ def split_cases_kfold(rows: list[IndexRow], k: int, fold: int, seed: int) -> tup
 
     cases = sorted({r.case_norm for r in rows})
     rng = random.Random(seed)
-    rng.shuffle(cases)
 
     folds: list[list[str]] = [[] for _ in range(k)]
-    for i, c in enumerate(cases):
-        folds[i % k].append(c)
+
+    if case_range is None:
+        rng.shuffle(cases)
+        for i, c in enumerate(cases):
+            folds[i % k].append(c)
+    else:
+        lo, hi = case_range
+        in_range: list[str] = []
+        out_range: list[str] = []
+        for c in cases:
+            n = _case_number(c)
+            if n is None:
+                out_range.append(c)
+            elif lo <= n <= hi:
+                in_range.append(c)
+            else:
+                out_range.append(c)
+
+        rng.shuffle(in_range)
+        rng.shuffle(out_range)
+
+        for i, c in enumerate(in_range):
+            folds[i % k].append(c)
+        for i, c in enumerate(out_range):
+            folds[i % k].append(c)
 
     val_cases = set(folds[fold])
     train_rows = [r for r in rows if r.case_norm not in val_cases]
