@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import re
 from pathlib import Path
+import csv
 
 import pandas as pd
 
@@ -92,6 +93,25 @@ def main() -> int:
     p.add_argument("--sim-root", type=Path, default=DEFAULT_SIM_ROOT)
     p.add_argument("--truth-csv", type=Path, default=DEFAULT_TRUTH)
     p.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    p.add_argument(
+        "--only-simulation-set",
+        action="append",
+        default=None,
+        help=(
+            "Only (re)index these top-level simulation_set folders under --sim-root. "
+            "Can be passed multiple times (e.g. --only-simulation-set RND). "
+            "When used with --update-existing, this updates just those sets without rescanning everything."
+        ),
+    )
+    p.add_argument(
+        "--update-existing",
+        type=Path,
+        default=None,
+        help=(
+            "Path to an existing image_dataset_index.csv to update in-place. "
+            "Requires --only-simulation-set. Rows for the selected simulation_set(s) are replaced."
+        ),
+    )
     g = p.add_mutually_exclusive_group()
     g.add_argument(
         "--include-rnd",
@@ -107,6 +127,9 @@ def main() -> int:
     )
     args = p.parse_args()
 
+    if args.update_existing is not None and not args.only_simulation_set:
+        raise ValueError("--update-existing requires --only-simulation-set (one or more).")
+
     include_rnd = True
     if args.include_rnd is True:
         include_rnd = True
@@ -117,38 +140,50 @@ def main() -> int:
     if not sim_root.exists():
         raise FileNotFoundError(f"Sim root not found: {sim_root}")
 
+    scan_roots: list[Path]
+    if args.only_simulation_set:
+        scan_roots = [(sim_root / s) for s in args.only_simulation_set]
+        missing = [str(p) for p in scan_roots if not p.exists()]
+        if missing:
+            raise FileNotFoundError(
+                "Some --only-simulation-set folders were not found under --sim-root: " + ", ".join(missing)
+            )
+    else:
+        scan_roots = [sim_root]
+
     rows: list[dict] = []
-    for fp in sim_root.rglob("*"):
-        if not fp.is_file():
-            continue
-        if fp.name.lower() == "thumbs.db":
-            continue
-        if fp.suffix.lower() not in IMG_EXTS:
-            continue
+    for scan_root in scan_roots:
+        for fp in scan_root.rglob("*"):
+            if not fp.is_file():
+                continue
+            if fp.name.lower() == "thumbs.db":
+                continue
+            if fp.suffix.lower() not in IMG_EXTS:
+                continue
 
-        try:
-            rel = fp.resolve().relative_to(sim_root)
-            simulation_set = rel.parts[0] if rel.parts else None
-        except Exception:
-            simulation_set = None
+            try:
+                rel = fp.resolve().relative_to(sim_root)
+                simulation_set = rel.parts[0] if rel.parts else None
+            except Exception:
+                simulation_set = None
 
-        orientation = _extract_orientation(fp)
-        case_norm = _extract_case_norm(fp)
-        plot = _extract_plot(fp)
+            orientation = _extract_orientation(fp)
+            case_norm = _extract_case_norm(fp)
+            plot = _extract_plot(fp)
 
-        if not include_rnd and orientation == "RND":
-            continue
+            if not include_rnd and orientation == "RND":
+                continue
 
-        rows.append(
-            {
-                "image_path": fp.resolve().relative_to(REPO_ROOT).as_posix(),
-                "filename": fp.name,
-                "simulation_set": simulation_set,
-                "orientation": orientation,
-                "case_norm": case_norm,
-                "plot": plot,
-            }
-        )
+            rows.append(
+                {
+                    "image_path": fp.resolve().relative_to(REPO_ROOT).as_posix(),
+                    "filename": fp.name,
+                    "simulation_set": simulation_set,
+                    "orientation": orientation,
+                    "case_norm": case_norm,
+                    "plot": plot,
+                }
+            )
 
     index_df = pd.DataFrame(rows)
     if index_df.empty:
@@ -220,6 +255,39 @@ def main() -> int:
         out = out.merge(hinge, on=["case_norm", "orientation"], how="left", validate="many_to_one")
 
     out.to_csv(args.out, index=False)
+
+    # Optional incremental update: replace selected simulation_set rows in an existing index.
+    if args.update_existing is not None:
+        replace_sets = set(str(s) for s in (args.only_simulation_set or []))
+        existing_path = args.update_existing.resolve()
+        if not existing_path.exists():
+            raise FileNotFoundError(f"Existing index not found: {existing_path}")
+
+        tmp_out = Path(str(existing_path) + ".tmp")
+        with existing_path.open("r", newline="", encoding="utf-8") as f_in:
+            reader = csv.DictReader(f_in)
+            existing_fields = list(reader.fieldnames or [])
+            new_fields = list(out.columns)
+            # Preserve existing column order and append any new columns at the end.
+            fieldnames = existing_fields + [c for c in new_fields if c not in existing_fields]
+
+            with tmp_out.open("w", newline="", encoding="utf-8") as f_out:
+                writer = csv.DictWriter(f_out, fieldnames=fieldnames)
+                writer.writeheader()
+
+                # Keep all existing rows except those in the sets we're replacing.
+                for row in reader:
+                    if (row.get("simulation_set") or "") in replace_sets:
+                        continue
+                    writer.writerow({k: row.get(k, "") for k in fieldnames})
+
+                # Append updated rows for the selected sets.
+                for row in out.to_dict(orient="records"):
+                    writer.writerow({k: row.get(k, "") for k in fieldnames})
+
+        tmp_out.replace(existing_path)
+        print("Updated existing index:", existing_path)
+
     print("Wrote:", args.out)
     print("Images:", len(out))
     print("Missing truth_PAI:", int(out["truth_PAI"].isna().sum()))
