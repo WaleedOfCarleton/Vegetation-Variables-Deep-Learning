@@ -1,173 +1,4 @@
 image_path,filename,simulation_set,orientation,case_norm,plot,truth_PAI,truth_LAI,truth_Clumping,truth_sim_id,truth_PAIe_hinge,truth_Clumping_hinge
-Simulations/Sunny Hemiphotos/RND/Case 001/test0.png,test0.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test1.png,test1.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test2.png,test2.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test3.png,test3.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test4.png,test4.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test5.png,test5.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test6.png,test6.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test7.png,test7.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test8.png,test8.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 001/test9.png,test9.png,Sunny Hemiphotos,RND,Case 001,,3.135,3.0,0.97,1,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test0.png,test0.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test1.png,test1.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test2.png,test2.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test3.png,test3.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test4.png,test4.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test5.png,test5.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test6.png,test6.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test7.png,test7.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test8.png,test8.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 002/test9.png,test9.png,Sunny Hemiphotos,RND,Case 002,,2.135,2.0,0.96,2,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test0.png,test0.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test1.png,test1.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test2.png,test2.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test3.png,test3.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test4.png,test4.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test5.png,test5.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test6.png,test6.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test7.png,test7.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test8.png,test8.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 003/test9.png,test9.png,Sunny Hemiphotos,RND,Case 003,,1.135,1.0,0.92,3,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test0.png,test0.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test1.png,test1.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test2.png,test2.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test3.png,test3.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test4.png,test4.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test5.png,test5.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test6.png,test6.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test7.png,test7.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test8.png,test8.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 004/test9.png,test9.png,Sunny Hemiphotos,RND,Case 004,,2.135,2.0,0.96,4,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test0.png,test0.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test1.png,test1.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test2.png,test2.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test3.png,test3.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test4.png,test4.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test5.png,test5.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test6.png,test6.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test7.png,test7.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test8.png,test8.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 005/test9.png,test9.png,Sunny Hemiphotos,RND,Case 005,,2.135,2.0,0.96,5,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test0.png,test0.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test1.png,test1.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test2.png,test2.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test3.png,test3.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test4.png,test4.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test5.png,test5.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test6.png,test6.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test7.png,test7.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test8.png,test8.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 006/test9.png,test9.png,Sunny Hemiphotos,RND,Case 006,,2.135,2.0,0.96,6,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test1.png,test1.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test2.png,test2.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test3.png,test3.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test4.png,test4.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test5.png,test5.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test6.png,test6.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test7.png,test7.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test8.png,test8.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 007/test9.png,test9.png,Sunny Hemiphotos,RND,Case 007,,2.06,2.0,0.98,7,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test0.png,test0.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test1.png,test1.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test2.png,test2.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test3.png,test3.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test4.png,test4.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test5.png,test5.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test6.png,test6.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test7.png,test7.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test8.png,test8.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 008/test9.png,test9.png,Sunny Hemiphotos,RND,Case 008,,0.56,0.5,0.93,8,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test0.png,test0.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test1.png,test1.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test2.png,test2.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test3.png,test3.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test4.png,test4.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test5.png,test5.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test6.png,test6.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test7.png,test7.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test8.png,test8.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 009/test9.png,test9.png,Sunny Hemiphotos,RND,Case 009,,2.635,2.5,0.97,9,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test0.png,test0.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test1.png,test1.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test2.png,test2.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test3.png,test3.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test4.png,test4.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test5.png,test5.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test6.png,test6.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test7.png,test7.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test8.png,test8.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 010/test9.png,test9.png,Sunny Hemiphotos,RND,Case 010,,4.289999999999999,3.6,0.9,10,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test0.png,test0.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test1.png,test1.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test2.png,test2.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test3.png,test3.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test4.png,test4.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test5.png,test5.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test6.png,test6.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test7.png,test7.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test8.png,test8.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 011/test9.png,test9.png,Sunny Hemiphotos,RND,Case 011,,3.0999999999999996,2.2,0.82,11,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test0.png,test0.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test1.png,test1.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test2.png,test2.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test3.png,test3.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test4.png,test4.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test5.png,test5.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/Test6.png,Test6.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test7.png,test7.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test8.png,test8.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 012/test9.png,test9.png,Sunny Hemiphotos,RND,Case 012,,3.205,2.5,0.86,12,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test0.png,test0.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test1.png,test1.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test2.png,test2.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test3.png,test3.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test4.png,test4.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test5.png,test5.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test6.png,test6.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test7.png,test7.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/test8.png,test8.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 013/Test9.png,Test9.png,Sunny Hemiphotos,RND,Case 013,,4.24,4.0,0.96,13,,
-Simulations/Sunny Hemiphotos/RND/Case 014/test0.png,test0.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/test1.png,test1.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/test2.png,test2.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/test3.png,test3.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/Test4.png,Test4.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/test5.png,test5.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/test6.png,test6.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/test7.png,test7.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/Test8.png,Test8.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 014/test9.png,test9.png,Sunny Hemiphotos,RND,Case 014,,2.82,2.1,1.0,14,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test0.png,test0.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test1.png,test1.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test2.png,test2.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test3.png,test3.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test4.png,test4.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test5.png,test5.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test6.png,test6.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test7.png,test7.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test8.png,test8.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 015/test9.png,test9.png,Sunny Hemiphotos,RND,Case 015,,3.42,2.7,1.0,15,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test0.png,test0.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test1.png,test1.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test2.png,test2.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test3.png,test3.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test4.png,test4.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test5.png,test5.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test6.png,test6.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test7.png,test7.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test8.png,test8.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 016/test9.png,test9.png,Sunny Hemiphotos,RND,Case 016,,5.725,5.5,0.97,16,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test0.png,test0.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test1.png,test1.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test2.png,test2.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test3.png,test3.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test4.png,test4.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test5.png,test5.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/Test6.png,Test6.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test7.png,test7.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test8.png,test8.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
-Simulations/Sunny Hemiphotos/RND/Case 017/test9.png,test9.png,Sunny Hemiphotos,RND,Case 017,,5.300000000000001,5.0,0.96,17,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 075/Plot04/test40.png,test40.png,DHP - RND - 4000x4000,RND,Case 075,Plot04,2.6,2.6,1.0,75,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 075/Plot04/test41.png,test41.png,DHP - RND - 4000x4000,RND,Case 075,Plot04,2.6,2.6,1.0,75,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 075/Plot04/test42.png,test42.png,DHP - RND - 4000x4000,RND,Case 075,Plot04,2.6,2.6,1.0,75,,
@@ -538,16 +369,16 @@ Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 039/Plot04/test46.p
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 039/Plot04/test47.png,test47.png,DHP - RND - 4000x4000,RND,Case 039,Plot04,4.0,4.0,1.0,39,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 039/Plot04/test48.png,test48.png,DHP - RND - 4000x4000,RND,Case 039,Plot04,4.0,4.0,1.0,39,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 039/Plot04/test49.png,test49.png,DHP - RND - 4000x4000,RND,Case 039,Plot04,4.0,4.0,1.0,39,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test40.png,test40.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test41.png,test41.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test42.png,test42.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test43.png,test43.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test44.png,test44.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test45.png,test45.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test46.png,test46.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test47.png,test47.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test48.png,test48.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test49.png,test49.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test40.png,test40.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test41.png,test41.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test42.png,test42.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test43.png,test43.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test44.png,test44.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test45.png,test45.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test46.png,test46.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test47.png,test47.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test48.png,test48.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 038/Plot04/test49.png,test49.png,DHP - RND - 4000x4000,RND,Case 038,Plot04,2.405,2.15,0.93,38,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 037/Plot04/test40.png,test40.png,DHP - RND - 4000x4000,RND,Case 037,Plot04,3.93,3.0,0.85,37,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 037/Plot04/test41.png,test41.png,DHP - RND - 4000x4000,RND,Case 037,Plot04,3.93,3.0,0.85,37,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 037/Plot04/test42.png,test42.png,DHP - RND - 4000x4000,RND,Case 037,Plot04,3.93,3.0,0.85,37,,
@@ -808,16 +639,16 @@ Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 012/Plot04/test46.p
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 012/Plot04/test47.png,test47.png,DHP - RND - 4000x4000,RND,Case 012,Plot04,3.205,2.5,0.86,12,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 012/Plot04/test48.png,test48.png,DHP - RND - 4000x4000,RND,Case 012,Plot04,3.205,2.5,0.86,12,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 012/Plot04/test49.png,test49.png,DHP - RND - 4000x4000,RND,Case 012,Plot04,3.205,2.5,0.86,12,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test40.png,test40.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test41.png,test41.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test42.png,test42.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test43.png,test43.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test44.png,test44.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test45.png,test45.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test46.png,test46.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test47.png,test47.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test48.png,test48.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
-Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test49.png,test49.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test40.png,test40.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test41.png,test41.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test42.png,test42.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test43.png,test43.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test44.png,test44.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test45.png,test45.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test46.png,test46.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test47.png,test47.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test48.png,test48.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
+Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 011/Plot04/test49.png,test49.png,DHP - RND - 4000x4000,RND,Case 011,Plot04,3.1,2.2,0.82,11,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 010/Plot04/test40.png,test40.png,DHP - RND - 4000x4000,RND,Case 010,Plot04,4.289999999999999,3.6,0.9,10,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 010/Plot04/test41.png,test41.png,DHP - RND - 4000x4000,RND,Case 010,Plot04,4.289999999999999,3.6,0.9,10,,
 Simulations/DHP - RND - 4000x4000/DHP - RND - 4000x4000/Case 010/Plot04/test42.png,test42.png,DHP - RND - 4000x4000,RND,Case 010,Plot04,4.289999999999999,3.6,0.9,10,,
@@ -1288,16 +1119,16 @@ Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 039/Plot04/test
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 039/Plot04/test47.png,test47.png,DHP - PLANO - 4000x4000,PLANO,Case 039,Plot04,4.0,4.0,1.0,39,3.507,0.981
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 039/Plot04/test48.png,test48.png,DHP - PLANO - 4000x4000,PLANO,Case 039,Plot04,4.0,4.0,1.0,39,3.507,0.981
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 039/Plot04/test49.png,test49.png,DHP - PLANO - 4000x4000,PLANO,Case 039,Plot04,4.0,4.0,1.0,39,3.507,0.981
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test40.png,test40.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test41.png,test41.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test42.png,test42.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test43.png,test43.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test44.png,test44.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test45.png,test45.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test46.png,test46.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test47.png,test47.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test48.png,test48.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test49.png,test49.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test40.png,test40.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test41.png,test41.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test42.png,test42.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test43.png,test43.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test44.png,test44.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test45.png,test45.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test46.png,test46.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test47.png,test47.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test48.png,test48.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 038/Plot04/test49.png,test49.png,DHP - PLANO - 4000x4000,PLANO,Case 038,Plot04,2.405,2.15,0.93,38,0.36,0.41
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 037/Plot04/test40.png,test40.png,DHP - PLANO - 4000x4000,PLANO,Case 037,Plot04,3.93,3.0,0.85,37,2.52,0.831
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 037/Plot04/test41.png,test41.png,DHP - PLANO - 4000x4000,PLANO,Case 037,Plot04,3.93,3.0,0.85,37,2.52,0.831
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 037/Plot04/test42.png,test42.png,DHP - PLANO - 4000x4000,PLANO,Case 037,Plot04,3.93,3.0,0.85,37,2.52,0.831
@@ -1558,16 +1389,16 @@ Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 012/Plot04/test
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 012/Plot04/test47.png,test47.png,DHP - PLANO - 4000x4000,PLANO,Case 012,Plot04,3.205,2.5,0.86,12,1.64,0.73
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 012/Plot04/test48.png,test48.png,DHP - PLANO - 4000x4000,PLANO,Case 012,Plot04,3.205,2.5,0.86,12,1.64,0.73
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 012/Plot04/test49.png,test49.png,DHP - PLANO - 4000x4000,PLANO,Case 012,Plot04,3.205,2.5,0.86,12,1.64,0.73
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test40.png,test40.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test41.png,test41.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test42.png,test42.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test43.png,test43.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test44.png,test44.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test45.png,test45.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test46.png,test46.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test47.png,test47.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test48.png,test48.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
-Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test49.png,test49.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test40.png,test40.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test41.png,test41.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test42.png,test42.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test43.png,test43.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test44.png,test44.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test45.png,test45.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test46.png,test46.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test47.png,test47.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test48.png,test48.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
+Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 011/Plot04/test49.png,test49.png,DHP - PLANO - 4000x4000,PLANO,Case 011,Plot04,3.1,2.2,0.82,11,1.41,0.72
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 010/Plot04/test40.png,test40.png,DHP - PLANO - 4000x4000,PLANO,Case 010,Plot04,4.289999999999999,3.6,0.9,10,1.78,0.61
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 010/Plot04/test41.png,test41.png,DHP - PLANO - 4000x4000,PLANO,Case 010,Plot04,4.289999999999999,3.6,0.9,10,1.78,0.61
 Simulations/DHP - PLANO - 4000x4000/DHP - PLANO - 4000x4000/Case 010/Plot04/test42.png,test42.png,DHP - PLANO - 4000x4000,PLANO,Case 010,Plot04,4.289999999999999,3.6,0.9,10,1.78,0.61
@@ -2038,16 +1869,16 @@ Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 039/Plot04/test
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 039/Plot04/test47.png,test47.png,DHP - ERECT - 4000x4000,ERECT,Case 039,Plot04,4.0,4.0,1.0,39,2.925,0.985
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 039/Plot04/test48.png,test48.png,DHP - ERECT - 4000x4000,ERECT,Case 039,Plot04,4.0,4.0,1.0,39,2.925,0.985
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 039/Plot04/test49.png,test49.png,DHP - ERECT - 4000x4000,ERECT,Case 039,Plot04,4.0,4.0,1.0,39,2.925,0.985
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test40.png,test40.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test41.png,test41.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test42.png,test42.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test43.png,test43.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test44.png,test44.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test45.png,test45.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test46.png,test46.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test47.png,test47.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test48.png,test48.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test49.png,test49.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.4050000000000002,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test40.png,test40.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test41.png,test41.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test42.png,test42.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test43.png,test43.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test44.png,test44.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test45.png,test45.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test46.png,test46.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test47.png,test47.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test48.png,test48.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 038/Plot04/test49.png,test49.png,DHP - ERECT - 4000x4000,ERECT,Case 038,Plot04,2.405,2.15,0.93,38,0.35,0.44
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 037/Plot04/test40.png,test40.png,DHP - ERECT - 4000x4000,ERECT,Case 037,Plot04,3.93,3.0,0.85,37,2.26,0.834
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 037/Plot04/test41.png,test41.png,DHP - ERECT - 4000x4000,ERECT,Case 037,Plot04,3.93,3.0,0.85,37,2.26,0.834
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 037/Plot04/test42.png,test42.png,DHP - ERECT - 4000x4000,ERECT,Case 037,Plot04,3.93,3.0,0.85,37,2.26,0.834
@@ -2308,16 +2139,16 @@ Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 012/Plot04/test
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 012/Plot04/test47.png,test47.png,DHP - ERECT - 4000x4000,ERECT,Case 012,Plot04,3.205,2.5,0.86,12,1.5,0.73
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 012/Plot04/test48.png,test48.png,DHP - ERECT - 4000x4000,ERECT,Case 012,Plot04,3.205,2.5,0.86,12,1.5,0.73
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 012/Plot04/test49.png,test49.png,DHP - ERECT - 4000x4000,ERECT,Case 012,Plot04,3.205,2.5,0.86,12,1.5,0.73
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test40.png,test40.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test41.png,test41.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test42.png,test42.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test43.png,test43.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test44.png,test44.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test45.png,test45.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test46.png,test46.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test47.png,test47.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test48.png,test48.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
-Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test49.png,test49.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.0999999999999996,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test40.png,test40.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test41.png,test41.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test42.png,test42.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test43.png,test43.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test44.png,test44.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test45.png,test45.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test46.png,test46.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test47.png,test47.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test48.png,test48.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
+Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 011/Plot04/test49.png,test49.png,DHP - ERECT - 4000x4000,ERECT,Case 011,Plot04,3.1,2.2,0.82,11,1.3,0.74
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 010/Plot04/test40.png,test40.png,DHP - ERECT - 4000x4000,ERECT,Case 010,Plot04,4.289999999999999,3.6,0.9,10,1.67,0.65
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 010/Plot04/test41.png,test41.png,DHP - ERECT - 4000x4000,ERECT,Case 010,Plot04,4.289999999999999,3.6,0.9,10,1.67,0.65
 Simulations/DHP - ERECT - 4000x4000/DHP - ERECT - 4000x4000/Case 010/Plot04/test42.png,test42.png,DHP - ERECT - 4000x4000,ERECT,Case 010,Plot04,4.289999999999999,3.6,0.9,10,1.67,0.65

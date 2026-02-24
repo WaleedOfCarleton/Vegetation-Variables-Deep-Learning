@@ -34,6 +34,12 @@ from pai_cnn.common import (  # noqa: E402
     split_cases_kfold,
 )
 
+RND_SIMULATION_SETS = {"RND", "Sunny Hemiphotos"}
+
+
+def _is_rnd_simulation_set(sim_set: str | None) -> bool:
+    return (sim_set or "") in RND_SIMULATION_SETS
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Train a CNN regressor to predict Excel truth clumping (truth_Clumping).")
@@ -75,8 +81,8 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=1.0,
         help=(
-            "Oversample training images with simulation_set == 'RND' by this multiplicative weight. "
-            "1.0 disables weighting. Example: 5.0 makes RND images ~5x more likely to be sampled."
+            "Oversample training images in the RND/Sunny Hemiphotos domain by this multiplicative weight. "
+            "1.0 disables weighting. Example: 5.0 makes that domain ~5x more likely to be sampled."
         ),
     )
 
@@ -166,9 +172,7 @@ def main() -> int:
         if float(args.rnd_train_weight) < 1.0:
             raise ValueError("--rnd-train-weight must be >= 1.0")
 
-        weights = [
-            float(args.rnd_train_weight) if (r.simulation_set or "") == "RND" else 1.0 for r in train_rows
-        ]
+        weights = [float(args.rnd_train_weight) if _is_rnd_simulation_set(r.simulation_set) else 1.0 for r in train_rows]
         gen = torch.Generator()
         gen.manual_seed(int(args.seed))
         sampler = WeightedRandomSampler(weights=weights, num_samples=len(weights), replacement=True, generator=gen)

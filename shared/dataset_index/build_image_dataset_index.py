@@ -64,12 +64,18 @@ def _normalize_case(case_part: str) -> str | None:
 
 
 def _extract_orientation(path: Path) -> str | None:
+    """Infer orientation token from path components.
+
+    Treat the new "Sunny Hemiphotos" set as the former RND domain so that
+    downstream filters expecting orientation=="RND" continue to work.
+    """
+
     up = " / ".join([p.upper() for p in path.parts])
     if "ERECT" in up:
         return "ERECT"
     if "PLANO" in up or "PLANAR" in up:
         return "PLANO"
-    if "RND" in up or "RANDOM" in up:
+    if "RND" in up or "RANDOM" in up or "SUNNY" in up:
         return "RND"
     return None
 

@@ -79,7 +79,9 @@ def parse_args() -> argparse.Namespace:
         "--rnd-train-weight",
         type=float,
         default=1.0,
-        help="Oversample training images with simulation_set == 'RND' by this weight (default: 1.0).",
+        help=(
+            "Oversample training images in the RND/Sunny Hemiphotos domain by this weight (default: 1.0)."
+        ),
     )
 
     p.add_argument(

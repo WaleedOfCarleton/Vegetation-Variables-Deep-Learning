@@ -107,7 +107,10 @@ def parse_args() -> argparse.Namespace:
         "--simulation-set",
         type=str,
         default=None,
-        help="Optional filter, e.g. 'RND' or 'DHP - ERECT - 4000x4000' (matches index column simulation_set exactly).",
+        help=(
+            "Optional filter, e.g. 'Sunny Hemiphotos', 'RND', or 'DHP - ERECT - 4000x4000' "
+            "(matches index column simulation_set exactly)."
+        ),
     )
     p.add_argument(
         "--orientation",
