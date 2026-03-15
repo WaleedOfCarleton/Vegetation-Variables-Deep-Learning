@@ -46,5 +46,26 @@ Predict all images + per-case mean:
 
 Workflow:
 1) Load checkpoint (`.pt`)
-2) Choose an image or folder
+2) Choose an image, a single case folder, **or a parent folder containing multiple Case */ subfolders**
 3) Click **Predict**
+
+Folder mode averages predictions:
+- Single case folder → mean/std over all images in that case.
+- Parent folder with multiple cases → per-case means plus an overall mean/std across cases.
+
+## Case-count sweep (train size vs. val MAE)
+
+Quickly assess how many training cases you need before gains plateau:
+
+```
+python ml/pai/run_sweep_train_cases.py \
+	--train-cases-list 15,25,35,45,55,65,70 \
+	--epochs 10 \
+	--patience 3 \
+	--best-metric val_mae_case \
+	--batch-size 16 --img-size 224 --lr 1e-4 --weight-decay 1e-4 --num-workers 0 --amp --pretrained
+```
+
+Outputs (timestamped under ml/runs/pai_cnn_case_sweep/):
+- One subfolder per train count (metrics.csv, val_cases.txt, checkpoints)
+- Aggregates: case_sweep_summary.csv and case_sweep_aggregate.json (use summary CSV to plot val_mae_case vs n_train_cases)

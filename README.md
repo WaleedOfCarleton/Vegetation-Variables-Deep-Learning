@@ -94,6 +94,7 @@ Common commands (from the repo root):
 - Train PAI: `python ml/pai/train_cnn_pai.py --amp --num-workers 0`
 - Train clumping (Excel truth): `python ml/clumping_cnn/train_cnn_clumping_truth.py --amp --num-workers 0`
 - Run GUI (loads either a PAI or clumping checkpoint): `python ml/pai/gui_predict_pai.py`
+- Sweep training cases vs. val MAE (PAI): `python ml/pai/run_sweep_train_cases.py --train-cases-list 15,25,35,45,55,65,70 --epochs 10 --patience 3 --best-metric val_mae_case --batch-size 16 --img-size 224 --lr 1e-4 --weight-decay 1e-4 --num-workers 0 --amp --pretrained`
 
 More details:
 
