@@ -79,6 +79,15 @@ def parse_args() -> argparse.Namespace:
             "--case-range-min/--case-range-max. Default: 0 (no constraint)."
         ),
     )
+    p.add_argument(
+        "--val-cases-file",
+        type=str,
+        default=None,
+        help=(
+            "Optional path to a text file listing case_norm values (one per line) to use for validation. "
+            "If set, overrides --val-fraction/--kfold."
+        ),
+    )
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--num-workers", type=int, default=2)
     p.add_argument(
@@ -177,7 +186,21 @@ def main() -> int:
         simulation_set=args.simulation_set,
     )
 
-    if args.kfold is not None:
+    if args.val_cases_file and args.kfold is not None:
+        raise ValueError("--val-cases-file cannot be combined with --kfold")
+
+    if args.val_cases_file:
+        val_cases = [ln.strip() for ln in Path(args.val_cases_file).read_text(encoding="utf-8").splitlines() if ln.strip()]
+        if not val_cases:
+            raise ValueError(f"No case names found in --val-cases-file: {args.val_cases_file}")
+        val_set = set(val_cases)
+        train_rows = [r for r in rows if r.case_norm not in val_set]
+        val_rows = [r for r in rows if r.case_norm in val_set]
+        if not val_rows:
+            raise ValueError("Validation set is empty after applying --val-cases-file")
+        if not train_rows:
+            raise ValueError("Training set is empty after applying --val-cases-file")
+    elif args.kfold is not None:
         train_rows, val_rows = split_cases_kfold(
             rows,
             k=int(args.kfold),
@@ -362,7 +385,12 @@ def main() -> int:
             n = 0
 
             if tqdm is not None:
-                it = tqdm(train_loader, desc=f"Epoch {epoch}/{args.epochs} [train]", leave=False)
+                it = tqdm(
+                    train_loader,
+                    desc=f"Ep {epoch}/{args.epochs}",
+                    leave=False,
+                    dynamic_ncols=True,
+                )
             else:
                 it = train_loader
 
@@ -387,6 +415,9 @@ def main() -> int:
                     it.set_postfix(loss=float(loss.item()))
                 elif step % 50 == 0:
                     print(f"  train step {step}: loss={loss.item():.4f}")
+
+            if tqdm is not None:
+                it.close()
 
             train_loss = running / max(1, n)
 

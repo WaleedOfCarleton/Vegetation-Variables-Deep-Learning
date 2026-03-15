@@ -91,7 +91,10 @@ class PaiGui:
         self.lbl_note = tk.Label(frm, text=note, wraplength=700, justify="left", fg="#444")
         self.lbl_note.grid(row=9, column=0, columnspan=3, sticky="w", pady=(10, 0))
 
-        hint = "Tip: The Simulation dataset is nested (Case/Plot/...); the folder option searches subfolders automatically."
+        hint = (
+            "Tip: The folder option works for a single case or a parent folder containing multiple Case */ subfolders; "
+            "images are averaged per case and also across all cases."
+        )
         self.lbl_hint = tk.Label(frm, text=hint, wraplength=700, justify="left", fg="#444")
         self.lbl_hint.grid(row=10, column=0, columnspan=3, sticky="w", pady=(6, 0))
 
@@ -150,6 +153,19 @@ class PaiGui:
             if p.suffix.lower() in exts:
                 files.append(p)
         return sorted(files)
+
+    @staticmethod
+    def _group_images_by_case(folder: Path) -> dict[str, list[Path]]:
+        """Treat each immediate subfolder as a case; gather images inside it."""
+
+        groups: dict[str, list[Path]] = {}
+        for sub in sorted(folder.iterdir()):
+            if not sub.is_dir():
+                continue
+            imgs = PaiGui._list_image_files(sub)
+            if imgs:
+                groups[sub.name] = imgs
+        return groups
 
     def _predict_pil(self, pil: Image.Image) -> float:
         tf = build_transforms(self.state.img_size, train=False)
@@ -293,24 +309,69 @@ class PaiGui:
                     pil = Image.open(img_path).convert("RGB")
                     pred = self._predict_pil(pil)
                     result_text = f"Prediction ({self.state.target_name}): {pred:.4f}"
+                    message_text = result_text
                     preview_path = img_path
                 else:
                     assert folder_path is not None
-                    files = self._list_image_files(folder_path)
-                    if not files:
-                        raise RuntimeError("No supported images found in selected folder (png/jpg/tif/bmp).")
+                    case_groups = self._group_images_by_case(folder_path)
+                    use_case_groups = len(case_groups) >= 2
 
-                    preds: list[float] = []
-                    for i, fp in enumerate(files, start=1):
-                        pil = Image.open(fp).convert("RGB")
-                        preds.append(self._predict_pil(pil))
-                        if i % 50 == 0:
-                            self.root.after(0, lambda i=i, n=len(files): self._set_status(f"predicting… {i}/{n}"))
+                    if not use_case_groups:
+                        files = self._list_image_files(folder_path)
+                        if not files:
+                            raise RuntimeError("No supported images found in selected folder (png/jpg/tif/bmp).")
 
-                    mu = mean(preds)
-                    sigma = pstdev(preds) if len(preds) > 1 else 0.0
-                    result_text = f"Prediction ({self.state.target_name}): mean={mu:.4f} | std={sigma:.4f} | n={len(preds)}"
-                    preview_path = files[0]
+                        preds: list[float] = []
+                        for i, fp in enumerate(files, start=1):
+                            pil = Image.open(fp).convert("RGB")
+                            preds.append(self._predict_pil(pil))
+                            if i % 50 == 0:
+                                self.root.after(0, lambda i=i, n=len(files): self._set_status(f"predicting… {i}/{n}"))
+
+                        mu = mean(preds)
+                        sigma = pstdev(preds) if len(preds) > 1 else 0.0
+                        result_text = (
+                            f"Prediction ({self.state.target_name}): mean={mu:.4f} | std={sigma:.4f} | n_images={len(preds)}"
+                        )
+                        message_text = result_text
+                        preview_path = files[0]
+                    else:
+                        case_preds: dict[str, list[float]] = {}
+                        total_imgs = 0
+                        for case, imgs in case_groups.items():
+                            preds: list[float] = []
+                            for i, fp in enumerate(imgs, start=1):
+                                pil = Image.open(fp).convert("RGB")
+                                preds.append(self._predict_pil(pil))
+                                total_imgs += 1
+                                if total_imgs % 50 == 0:
+                                    self.root.after(
+                                        0,
+                                        lambda i=total_imgs, n=sum(len(v) for v in case_groups.values()): self._set_status(
+                                            f"predicting… {i}/{n}"
+                                        ),
+                                    )
+                            case_preds[case] = preds
+
+                        case_means = {c: mean(ps) for c, ps in case_preds.items()}
+                        mu_cases = mean(case_means.values())
+                        sigma_cases = pstdev(case_means.values()) if len(case_means) > 1 else 0.0
+                        result_text = (
+                            f"Prediction ({self.state.target_name}): mean_case={mu_cases:.4f} | std_case={sigma_cases:.4f} "
+                            f"| n_cases={len(case_means)} | n_images={total_imgs}"
+                        )
+
+                        detail_lines: list[str] = []
+                        for case in list(sorted(case_means.keys()))[:10]:
+                            detail_lines.append(
+                                f"{case}: mean={case_means[case]:.4f} (n={len(case_preds[case])})"
+                            )
+                        if len(case_means) > 10:
+                            detail_lines.append(f"... (+{len(case_means) - 10} more cases)")
+
+                        message_text = result_text + ("\n\n" + "\n".join(detail_lines) if detail_lines else "")
+                        first_case = next(iter(case_preds.keys()))
+                        preview_path = case_groups[first_case][0]
 
                 def done() -> None:
                     self._set_preview_from_path(preview_path)
@@ -318,7 +379,7 @@ class PaiGui:
                     self._set_status("done")
                     self._is_predicting = False
                     self._refresh_controls()
-                    messagebox.showinfo("Prediction", result_text)
+                    messagebox.showinfo("Prediction", message_text)
 
                 self.root.after(0, done)
 
