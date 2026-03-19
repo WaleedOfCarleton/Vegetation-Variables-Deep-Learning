@@ -88,6 +88,12 @@ def parse_args() -> argparse.Namespace:
             "If set, overrides --val-fraction/--kfold."
         ),
     )
+    p.add_argument(
+        "--train-cases-file",
+        type=str,
+        default=None,
+        help="Optional text file with training case_norm values, one per line. If provided with --val-cases-file, overlap is not allowed.",
+    )
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--num-workers", type=int, default=2)
     p.add_argument(
@@ -189,17 +195,31 @@ def main() -> int:
     if args.val_cases_file and args.kfold is not None:
         raise ValueError("--val-cases-file cannot be combined with --kfold")
 
+    train_set = None
+    if args.train_cases_file:
+        train_cases = [ln.strip() for ln in Path(args.train_cases_file).read_text(encoding="utf-8").splitlines() if ln.strip()]
+        if not train_cases:
+            raise ValueError(f"No case names found in --train-cases-file: {args.train_cases_file}")
+        train_set = set(train_cases)
+
     if args.val_cases_file:
         val_cases = [ln.strip() for ln in Path(args.val_cases_file).read_text(encoding="utf-8").splitlines() if ln.strip()]
         if not val_cases:
             raise ValueError(f"No case names found in --val-cases-file: {args.val_cases_file}")
         val_set = set(val_cases)
-        train_rows = [r for r in rows if r.case_norm not in val_set]
+        if train_set and (train_set & val_set):
+            overlap = sorted(train_set & val_set)
+            raise ValueError(f"Train/val case sets overlap: {overlap}")
+
+        if train_set is not None:
+            train_rows = [r for r in rows if r.case_norm in train_set]
+        else:
+            train_rows = [r for r in rows if r.case_norm not in val_set]
         val_rows = [r for r in rows if r.case_norm in val_set]
         if not val_rows:
             raise ValueError("Validation set is empty after applying --val-cases-file")
         if not train_rows:
-            raise ValueError("Training set is empty after applying --val-cases-file")
+            raise ValueError("Training set is empty after applying provided train/val splits")
     elif args.kfold is not None:
         train_rows, val_rows = split_cases_kfold(
             rows,

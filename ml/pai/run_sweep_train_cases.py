@@ -111,6 +111,13 @@ def parse_args() -> argparse.Namespace:
         help="Base output folder (default: ml/runs/pai_cnn_case_sweep/<timestamp>)",
     )
 
+    p.add_argument(
+        "--val-count",
+        type=int,
+        default=None,
+        help="Optional fixed number of validation cases to hold out (e.g., 10). If set, all sweeps reuse the same validation set.",
+    )
+
     p.add_argument("--dry-run", action="store_true", help="Print commands without executing training.")
     return p.parse_args()
 
@@ -118,6 +125,26 @@ def parse_args() -> argparse.Namespace:
 def _write_lines(path: Path, lines: Sequence[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def _write_filtered_index(index_path: Path, rows: Sequence, *, target_col: str = "truth_PAI") -> None:
+    index_path.parent.mkdir(parents=True, exist_ok=True)
+    import csv as _csv
+
+    fieldnames = ["image_path", "case_norm", "orientation", "simulation_set", target_col]
+    with index_path.open("w", newline="", encoding="utf-8") as f:
+        writer = _csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for r in rows:
+            writer.writerow(
+                {
+                    "image_path": r.image_path,
+                    "case_norm": r.case_norm,
+                    "orientation": r.orientation,
+                    "simulation_set": r.simulation_set,
+                    target_col: r.truth_value,
+                }
+            )
 
 
 def main() -> int:
@@ -147,6 +174,18 @@ def main() -> int:
     rng = random.Random(args.seed)
     rng.shuffle(cases)
 
+    val_cases_fixed: list[str] | None = None
+    train_pool = cases
+    if args.val_count is not None:
+        if args.val_count <= 0:
+            raise ValueError("--val-count must be positive when provided")
+        if args.val_count >= len(cases):
+            raise ValueError("--val-count must be smaller than total cases")
+        val_cases_fixed = cases[-args.val_count:]
+        train_pool = cases[:-args.val_count]
+
+    available_train = len(train_pool)
+
     if args.train_cases_list:
         train_counts: list[int] = []
         for tok in args.train_cases_list.split(","):
@@ -156,8 +195,8 @@ def main() -> int:
             n = int(tok)
             if n <= 0:
                 raise ValueError("Train case counts must be positive")
-            if n >= len(cases):
-                # Skip counts that would leave no validation cases.
+            if n > available_train:
+                # Skip counts that would exceed available training pool.
                 continue
             if n not in train_counts:
                 train_counts.append(n)
@@ -165,7 +204,7 @@ def main() -> int:
             raise ValueError("No usable train counts found in --train-cases-list")
         max_train = max(train_counts)
     else:
-        max_train = min(int(args.max_train_cases), len(cases) - 1)
+        max_train = min(int(args.max_train_cases), available_train)
         train_counts = list(range(1, max_train + 1))
     ts = time.strftime("%Y%m%d-%H%M%S")
     out_dir = Path(args.out_dir) if args.out_dir else (repo_root / "ml" / "runs" / "pai_cnn_case_sweep" / ts)
@@ -175,14 +214,27 @@ def main() -> int:
     results: list[SweepResult] = []
 
     for n_train in train_counts:
-        train_cases = cases[:n_train]
-        val_cases = cases[n_train:]
-        if not val_cases:
-            break
+        if val_cases_fixed is not None:
+            train_cases = train_pool[:n_train]
+            val_cases = val_cases_fixed
+        else:
+            train_cases = cases[:n_train]
+            val_cases = cases[n_train:]
+            if not val_cases:
+                break
 
         run_dir = out_dir / f"train_{n_train:03d}_cases"
         val_file = run_dir / "val_cases.txt"
         _write_lines(val_file, val_cases)
+
+        # Constrain training to the selected cases by writing a filtered index and explicit train list
+        train_file = run_dir / "train_cases.txt"
+        _write_lines(train_file, train_cases)
+
+        filtered_index = run_dir / "index_subset.csv"
+        selected_cases = set(train_cases) | set(val_cases)
+        filtered_rows = [r for r in rows if r.case_norm in selected_cases]
+        _write_filtered_index(filtered_index, filtered_rows, target_col="truth_PAI")
 
         cmd = [
             python_exe,
@@ -191,6 +243,8 @@ def main() -> int:
             str(run_dir),
             "--val-cases-file",
             str(val_file),
+            "--train-cases-file",
+            str(train_file),
             "--img-size",
             str(args.img_size),
             "--batch-size",
@@ -213,10 +267,9 @@ def main() -> int:
             str(args.rnd_train_weight),
             "--target-col",
             "truth_PAI",
+            "--index-csv",
+            str(filtered_index),
         ]
-
-        if args.index_csv:
-            cmd += ["--index-csv", str(index_csv)]
         if args.orientation:
             cmd += ["--orientation", str(args.orientation)]
         if args.simulation_set:
