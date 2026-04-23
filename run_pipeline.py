@@ -50,8 +50,6 @@ def main() -> int:
             + "."
         ),
     )
-    # NOTE: ML/CNN workflows were removed (ml/ deleted). If reintroduced,
-    # add the step back to STEPS and re-add an include flag.
     p.add_argument(
         "--dry-run",
         action="store_true",
